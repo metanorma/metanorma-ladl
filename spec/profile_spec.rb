@@ -28,6 +28,46 @@ RSpec.describe Metanorma::Ladl::Profile do
     expect(described_class.from_lml(profile.to_lml).to_h).to eq(profile.to_h)
   end
 
+  it "extracts authored keyword-inline definitions without parser capture metadata" do
+    text = <<~'LML'
+      LabelTemplate "Inline" {
+        pattern = "%n"
+        definition "A \"quoted\" label, C:\\labels, Ελληνικά — 日本語"
+      }
+      LabelTemplate "Empty" {
+        pattern = "%n"
+        definition ""
+      }
+      LabelTemplate "Multiline" {
+        pattern = "%n"
+        definition "first line
+      second line"
+      }
+      LabelTemplate "Block" {
+        pattern = "%n"
+        definition {
+          Block preserves layout and literal C:\labels.
+        }
+      }
+    LML
+    definitions = Metanorma::Ladl::LmlCodec.load(text).map { |i| i.fetch("properties").fetch("definition") }
+    expect(definitions).to eq([
+      'A "quoted" label, C:\\labels, Ελληνικά — 日本語',
+      "", "first line\nsecond line",
+      "\n    Block preserves layout and literal C:\\labels.\n  "
+    ])
+  end
+
+  it "retains independently authored worked-profile definition meanings" do
+    instances = described_class.from_lml(candidate).to_h.fetch("instances")
+    by_name = instances.to_h { |i| [i.fetch("name"), i.fetch("properties").fetch("definition")] }
+    expect(by_name.fetch("DocumentContext")).to eq("Top-level document context for ISO/IEC documents")
+    expect(by_name.fetch("ClauseLabelTemplate")).to eq("Template for local clause references")
+    expect(by_name.fetch("OrderedListItemLevel4Labeller")).to eq("Labeller for fourth level ordered list items")
+    expect(by_name.values).to all(be_a(String))
+    expect(by_name.values.grep(/\{:string|"@\d+/)).to be_empty
+  end
+
   it "rejects the untouched source's unsupported draft instance syntax" do
     source = File.read(File.expand_path("fixtures/iso-original.lml", __dir__))
     expect { described_class.from_lml(source) }.to raise_error(Metanorma::Ladl::ProfileError, /Invalid supported LML/)

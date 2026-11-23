@@ -35,7 +35,15 @@ module Metanorma
       def properties(attributes)
         Array(attributes).each_with_object({}) do |item, result|
           if item[:definition]
-            key, val = "definition", item[:definition].to_s
+            capture = item[:definition]
+            # The official parser captures keyword-inline definitions as a
+            # string value node, but block definitions as a source slice.
+            # Stringifying the former leaks Ruby inspection/offset metadata.
+            key = "definition"
+            val = capture.is_a?(Hash) ? value(capture) : capture.to_s
+            unless val.is_a?(String)
+              raise UnsupportedFeature, "LML definitions must contain text"
+            end
           elsif item[:comments]
             next
           else
