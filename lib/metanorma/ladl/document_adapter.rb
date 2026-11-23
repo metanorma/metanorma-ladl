@@ -41,6 +41,21 @@ module Metanorma
             !child.is_a?(Inline::RenderedDisplay) &&
             !excluded?(node, child)
         end
+        # Newly appended native children have no parsed element_order entry.
+        # Preserve recorded order, then include every declared occurrence not
+        # represented there. Repeated identities remain visible to Engine's
+        # shared-node validation instead of being silently deduplicated.
+        ordered_counts = children.tally
+        declared_counts = Hash.new(0)
+        node.class.attributes.each_key do |key|
+          next if OMIT.include?(key)
+          Array(node.public_send(key)).each do |child|
+            next unless child.is_a?(Lutaml::Model::Serializable)
+            next if child.is_a?(Inline::RenderedDisplay) || excluded?(node, child)
+            declared_counts[child] += 1
+            children << child if declared_counts[child] > ordered_counts.fetch(child, 0)
+          end
+        end
         children.each { |child| @parents[child.object_id] = node }
         children
       end

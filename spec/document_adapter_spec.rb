@@ -77,6 +77,25 @@ RSpec.describe Metanorma::Ladl::DocumentAdapter do
       "f1" => "Figure 1", "f2" => "Figure 2", "n1" => "NOTE 1", "n2" => "NOTE 2", "n3" => "NOTE", "an" => "NOTE")
   end
 
+  it "includes appended native children and recounts without replacing source objects" do
+    root = Metanorma::Standoc::Document::Root.from_xml(xml)
+    clause = root.sections.clause.first
+    note = clause.notes.first
+    engine.call(root, adapter: adapter)
+    expect(adapter.label_for(note, form: :local)).to eq("NOTE")
+    added = Metanorma::Document::Components::Blocks::NoteBlock.new(id: "new-note")
+    clause.notes << added
+    engine.call(root, adapter: adapter)
+    expect(clause.notes.first).to equal(note)
+    expect(clause.notes.last).to equal(added)
+    expect(adapter.label_for(note, form: :local)).to eq("NOTE 1")
+    expect(adapter.label_for(added, form: :local)).to eq("NOTE 2")
+    clause.notes << added
+    original = note.to_xml
+    expect { engine.call(root, adapter: adapter) }.to raise_error(Metanorma::Ladl::TreeError, /tree/)
+    expect(note.to_xml).to eq(original)
+  end
+
   it "persists six-field metadata on actual legacy string-slot block models" do
     root = Metanorma::Standoc::Document::Root.from_xml(xml)
     engine.call(root, adapter: adapter)
