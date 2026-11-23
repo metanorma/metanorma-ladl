@@ -1,0 +1,235 @@
+= metanorma-ladl
+
+metanorma-ladl assigns labels such as "Clause 1", "Figure A.2" or "a)" to the
+parts of a Metanorma document. The numbering rules live in a declarative
+profile, written in YAML or LML, rather than in flavor code.
+
+The library loads and validates a profile, walks a content tree, calculates
+every label, and writes the labels only after all of them have succeeded.
+
+== Development status
+
+This library is under development. Version 0.1.0 has not been published to
+RubyGems, and its API may change.
+
+* It requires Ruby 3.3 or later.
+* Focused specs for the engine, the profiles and the native adapter have been
+  run on Ruby 4.0.1. Other Ruby versions and operating systems have not been
+  confirmed yet.
+* The native adapter needs a `metanorma-document` revision that adds
+  `FmtLadlLabelData`. That change is not in a released version yet.
+* No Metanorma flavor uses this library by default.
+
+== Installation
+
+Because the gem is not published, use a local checkout:
+
+[source,ruby]
+----
+gem "metanorma-ladl", path: "../metanorma-ladl"
+----
+
+== Usage
+
+=== Label an illustrative tree
+
+`ContentElement` is a small illustrative model that ships with the library. It
+is useful for learning the profile format and for testing rules. It is not a
+Metanorma document model.
+
+// tag::quickstart[]
+[source,ruby]
+----
+require "metanorma/ladl"
+
+profile = Metanorma::Ladl::Profile.from_yaml(<<~YAML)
+  schema: mn112/1
+  instances:
+    - name: ExampleStyle
+      type: LabelStyle
+      properties:
+        name: example
+        labellers: [ClauseLabeller, NoteLabeller]
+        sequences: [DecimalNumericSequence]
+        templates: [NumberTemplate, ClauseTemplate, NoteTemplate, NoteGlobalTemplate]
+        contexts: [DocumentContext, ClauseContext]
+    - name: DocumentContext
+      type: LabelContext
+      properties: { name: document }
+    - name: ClauseContext
+      type: LabelContext
+      properties: { name: clause }
+    - name: NumberTemplate
+      type: LabelTemplate
+      properties: { pattern: "%n" }
+    - name: ClauseTemplate
+      type: LabelTemplate
+      properties: { pattern: "Clause %n" }
+    - name: NoteTemplate
+      type: LabelTemplate
+      properties: { pattern: "Note %n" }
+    - name: NoteGlobalTemplate
+      type: LabelTemplate
+      properties: { pattern: "%parent, %self" }
+    - name: ClauseLabeller
+      type: Labeller
+      properties:
+        id: clause
+        type: clause
+        context: DocumentContext
+        sequence: DecimalNumericSequence
+        template: NumberTemplate
+        global_template: ClauseTemplate
+    - name: NoteLabeller
+      type: Labeller
+      properties:
+        id: note
+        type: note
+        context: ClauseContext
+        parent: ClauseLabeller
+        sequence: DecimalNumericSequence
+        template: NoteTemplate
+        global_template: NoteGlobalTemplate
+YAML
+
+note = Metanorma::Ladl::ContentElement.new(id: "note-1", type: "note")
+clause = Metanorma::Ladl::ContentElement.new(id: "scope", type: "clause", context: "clause")
+root = Metanorma::Ladl::ContentElement.new(id: "doc", type: "document", context: "document")
+root.add(clause.add(note))
+
+Metanorma::Ladl::Engine.new(profile: profile).call(root)
+
+puts clause.label.global
+puts note.label.local
+puts note.label.global
+----
+// end::quickstart[]
+
+This prints:
+
+// tag::quickstart-output[]
+[source,text]
+----
+Clause 1
+Note 1
+Clause 1, Note 1
+----
+// end::quickstart-output[]
+
+=== Load and convert profiles
+
+The ISO/IEC profile ships with the gem. Any valid profile can be written back
+to YAML or LML:
+
+[source,ruby]
+----
+profile = Metanorma::Ladl::Profile.iso_iec
+
+yaml = profile.to_yaml
+lml = profile.to_lml
+
+Metanorma::Ladl::Profile.from_yaml(yaml)
+Metanorma::Ladl::Profile.from_lml(lml)
+----
+
+=== Label a native Metanorma document
+
+The native adapter is a separate, explicit require, because it loads the
+Document and Standoc models. It works on real presentation models and writes
+labels into their native presentation metadata.
+
+[source,ruby]
+----
+require "metanorma/ladl"
+require "metanorma/ladl/document_adapter"
+
+# presentation_root is an already loaded Document or ISO presentation root.
+adapter = Metanorma::Ladl::DocumentAdapter.new(mode: :presentation)
+engine = Metanorma::Ladl::Engine.new(profile: Metanorma::Ladl::Profile.iso_iec)
+engine.call(presentation_root, adapter: adapter)
+
+adapter.label_for(node, form: :local)
+adapter.label_for(node, form: :global)
+adapter.label_data(node)
+----
+
+The adapter refuses any mode other than `:presentation`, and refuses a root
+whose type is set to anything other than `presentation`. It never labels a
+semantic document.
+
+Each label stores six fields, which persist through the document's XML:
+
+[cols="1,3"]
+|===
+|Field |Meaning
+
+|`local` |Label text within its immediate context
+|`global` |Label text for references from elsewhere in the document
+|`value` |Formatted sequence value
+|`direction` |Text direction of the local label
+|`global_direction` |Text direction of the global label
+|`labeller` |ID of the labeller that produced the label
+|===
+
+== Supported today
+
+The ISO/IEC profile in `ladl/iso-iec.yaml` is the source of truth for its
+labellers. Its 66 declarations round-trip through both YAML and LML. Twenty
+labellers have been exercised through real ISO and Standoc XML, and rendering
+through Core and Taste uses the stored labels for global and local
+cross-references. Explicit authored cross-reference text still takes priority.
+
+The native adapter recognizes these node types: `annex`, `clause`, `subclause`,
+`figure`, `subfigure`, `table`, `note`, `example`, `formula`, `list`,
+`list_item_unordered`, and `list_item_ordered_level1` through
+`list_item_ordered_level4`. Nodes marked as unnumbered receive no label.
+
+Profiles can use:
+
+* Built-in decimal, Arabic-Indic, lowercase and uppercase Latin, lowercase and
+  uppercase Roman (1 to 3999), and lowercase and uppercase Greek sequences.
+* Custom numeric sequences with a base sequence, initial value, increment and
+  direction.
+* Custom character sequences that expand by `repeat_label`, `double_character`
+  or `prepend_prefix`.
+* Template placeholders `%n`, `%pn`, `%parent` and `%self`.
+* Template conditions based on element count.
+* Left-to-right and right-to-left label directions.
+
+== Not supported
+
+These cases raise an error instead of producing a wrong label:
+
+* Sequence names with no built-in or declared definition. There are no built-in
+  CJK, Hebrew or Cyrillic sequences, so a profile that references one by name
+  fails when it is loaded.
+* `cycle_length` on a custom numeric sequence.
+* Unknown template placeholders or expansion rules.
+* Roman values outside 1 to 3999, and character sequences that run out of
+  values without an expansion rule.
+* More than four levels of ordered list in the native adapter.
+* LML imports, and nested or extended LML instances.
+
+A profile can declare its own `CharacterSequence` with any characters. That is
+generic character cycling, and does not implement the counting rules of a
+particular writing system.
+
+== Remaining work
+
+* Wire up the other Metanorma flavors.
+* Decide how and when LADL becomes the default labelling path.
+* Establish parity with existing legacy output.
+* Release the required `metanorma-document` change.
+* Confirm the supported Ruby and operating system matrix in CI.
+
+== Development
+
+[source,sh]
+----
+bundle install
+bundle exec rake
+----
+
+== License
+
+BSD 2-Clause. See link:LICENSE.txt[LICENSE.txt].
