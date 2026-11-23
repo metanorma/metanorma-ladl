@@ -1,0 +1,1038 @@
+{
+  "source_repo": "metanorma/docs",
+  "source_revision": "97f6e8bc42b571c8b80c348c0a33027bde89f0eb",
+  "source_path": "sources/112/iso_iec_label_style.lml",
+  "source_sha256": "2d62f124d4b25fc9d604a1b7ed59a4da49ee16d993941de70394a43f9db0da49",
+  "changes": [
+    {
+      "line": 5,
+      "source": "instance ISOIECLabelStyle < LabelStyle {",
+      "candidate": "LabelStyle \"ISOIECLabelStyle\" {"
+    },
+    {
+      "line": 41,
+      "source": "    ArabicNumericSequence,",
+      "candidate": "    ref:(DecimalNumericSequence),"
+    },
+    {
+      "line": 42,
+      "source": "    AlphaLowerNumericSequence,",
+      "candidate": "    ref:(AlphaLowerNumericSequence),"
+    },
+    {
+      "line": 43,
+      "source": "    AlphaUpperNumericSequence,",
+      "candidate": "    ref:(AlphaUpperNumericSequence),"
+    },
+    {
+      "line": 44,
+      "source": "    RomanLowerNumericSequence",
+      "candidate": "    ref:(RomanLowerNumericSequence)"
+    },
+    {
+      "line": 49,
+      "source": "    ClauseLabelTemplate,",
+      "candidate": "    ref:(ClauseLabelTemplate),"
+    },
+    {
+      "line": 50,
+      "source": "    ClauseGlobalLabelTemplate,",
+      "candidate": "    ref:(ClauseGlobalLabelTemplate),"
+    },
+    {
+      "line": 51,
+      "source": "    SubclauseLabelTemplate,",
+      "candidate": "    ref:(SubclauseLabelTemplate),"
+    },
+    {
+      "line": 52,
+      "source": "    SubclauseGlobalLabelTemplate,",
+      "candidate": "    ref:(SubclauseGlobalLabelTemplate),"
+    },
+    {
+      "line": 53,
+      "source": "    AnnexLabelTemplate,",
+      "candidate": "    ref:(AnnexLabelTemplate),"
+    },
+    {
+      "line": 54,
+      "source": "    AnnexGlobalLabelTemplate,",
+      "candidate": "    ref:(AnnexGlobalLabelTemplate),"
+    },
+    {
+      "line": 55,
+      "source": "    AnnexClauseLabelTemplate,",
+      "candidate": "    ref:(AnnexClauseLabelTemplate),"
+    },
+    {
+      "line": 56,
+      "source": "    AnnexClauseGlobalLabelTemplate,",
+      "candidate": "    ref:(AnnexClauseGlobalLabelTemplate),"
+    },
+    {
+      "line": 57,
+      "source": "    FigureLabelTemplate,",
+      "candidate": "    ref:(FigureLabelTemplate),"
+    },
+    {
+      "line": 58,
+      "source": "    FigureGlobalLabelTemplate,",
+      "candidate": "    ref:(FigureGlobalLabelTemplate),"
+    },
+    {
+      "line": 59,
+      "source": "    AnnexFigureLabelTemplate,",
+      "candidate": "    ref:(AnnexFigureLabelTemplate),"
+    },
+    {
+      "line": 60,
+      "source": "    AnnexFigureGlobalLabelTemplate,",
+      "candidate": "    ref:(AnnexFigureGlobalLabelTemplate),"
+    },
+    {
+      "line": 61,
+      "source": "    SubfigureLabelTemplate,",
+      "candidate": "    ref:(SubfigureLabelTemplate),"
+    },
+    {
+      "line": 62,
+      "source": "    SubfigureGlobalLabelTemplate,",
+      "candidate": "    ref:(SubfigureGlobalLabelTemplate),"
+    },
+    {
+      "line": 63,
+      "source": "    TableLabelTemplate,",
+      "candidate": "    ref:(TableLabelTemplate),"
+    },
+    {
+      "line": 64,
+      "source": "    TableGlobalLabelTemplate,",
+      "candidate": "    ref:(TableGlobalLabelTemplate),"
+    },
+    {
+      "line": 65,
+      "source": "    AnnexTableLabelTemplate,",
+      "candidate": "    ref:(AnnexTableLabelTemplate),"
+    },
+    {
+      "line": 66,
+      "source": "    AnnexTableGlobalLabelTemplate,",
+      "candidate": "    ref:(AnnexTableGlobalLabelTemplate),"
+    },
+    {
+      "line": 67,
+      "source": "    NoteSingleLabelTemplate,",
+      "candidate": "    ref:(NoteSingleLabelTemplate),"
+    },
+    {
+      "line": 68,
+      "source": "    NoteMultipleLabelTemplate,",
+      "candidate": "    ref:(NoteMultipleLabelTemplate),"
+    },
+    {
+      "line": 69,
+      "source": "    NoteSingleGlobalLabelTemplate,",
+      "candidate": "    ref:(NoteSingleGlobalLabelTemplate),"
+    },
+    {
+      "line": 70,
+      "source": "    NoteMultipleGlobalLabelTemplate,",
+      "candidate": "    ref:(NoteMultipleGlobalLabelTemplate),"
+    },
+    {
+      "line": 71,
+      "source": "    ExampleSingleLabelTemplate,",
+      "candidate": "    ref:(ExampleSingleLabelTemplate),"
+    },
+    {
+      "line": 72,
+      "source": "    ExampleMultipleLabelTemplate,",
+      "candidate": "    ref:(ExampleMultipleLabelTemplate),"
+    },
+    {
+      "line": 73,
+      "source": "    ExampleSingleGlobalLabelTemplate,",
+      "candidate": "    ref:(ExampleSingleGlobalLabelTemplate),"
+    },
+    {
+      "line": 74,
+      "source": "    ExampleMultipleGlobalLabelTemplate,",
+      "candidate": "    ref:(ExampleMultipleGlobalLabelTemplate),"
+    },
+    {
+      "line": 75,
+      "source": "    FormulaLabelTemplate,",
+      "candidate": "    ref:(FormulaLabelTemplate),"
+    },
+    {
+      "line": 76,
+      "source": "    FormulaGlobalLabelTemplate,",
+      "candidate": "    ref:(FormulaGlobalLabelTemplate),"
+    },
+    {
+      "line": 77,
+      "source": "    AnnexFormulaLabelTemplate,",
+      "candidate": "    ref:(AnnexFormulaLabelTemplate),"
+    },
+    {
+      "line": 78,
+      "source": "    AnnexFormulaGlobalLabelTemplate,",
+      "candidate": "    ref:(AnnexFormulaGlobalLabelTemplate),"
+    },
+    {
+      "line": 79,
+      "source": "    ListLabelTemplate,",
+      "candidate": "    ref:(ListLabelTemplate),"
+    },
+    {
+      "line": 80,
+      "source": "    ListGlobalLabelTemplate,",
+      "candidate": "    ref:(ListGlobalLabelTemplate),"
+    },
+    {
+      "line": 81,
+      "source": "    AnnexListLabelTemplate,",
+      "candidate": "    ref:(AnnexListLabelTemplate),"
+    },
+    {
+      "line": 82,
+      "source": "    AnnexListGlobalLabelTemplate,",
+      "candidate": "    ref:(AnnexListGlobalLabelTemplate),"
+    },
+    {
+      "line": 83,
+      "source": "    UnorderedListItemLabelTemplate,",
+      "candidate": "    ref:(UnorderedListItemLabelTemplate),"
+    },
+    {
+      "line": 84,
+      "source": "    OrderedListItemLevel1LabelTemplate,",
+      "candidate": "    ref:(OrderedListItemLevel1LabelTemplate),"
+    },
+    {
+      "line": 85,
+      "source": "    OrderedListItemLevel2LabelTemplate,",
+      "candidate": "    ref:(OrderedListItemLevel2LabelTemplate),"
+    },
+    {
+      "line": 86,
+      "source": "    OrderedListItemLevel3LabelTemplate,",
+      "candidate": "    ref:(OrderedListItemLevel3LabelTemplate),"
+    },
+    {
+      "line": 87,
+      "source": "    OrderedListItemLevel4LabelTemplate",
+      "candidate": "    ref:(OrderedListItemLevel4LabelTemplate)"
+    },
+    {
+      "line": 92,
+      "source": "    DocumentContext,",
+      "candidate": "    ref:(DocumentContext),"
+    },
+    {
+      "line": 93,
+      "source": "    ClauseContext,",
+      "candidate": "    ref:(ClauseContext),"
+    },
+    {
+      "line": 94,
+      "source": "    SubclauseContext,",
+      "candidate": "    ref:(SubclauseContext),"
+    },
+    {
+      "line": 95,
+      "source": "    AnnexContext,",
+      "candidate": "    ref:(AnnexContext),"
+    },
+    {
+      "line": 96,
+      "source": "    AnnexClauseContext,",
+      "candidate": "    ref:(AnnexClauseContext),"
+    },
+    {
+      "line": 97,
+      "source": "    ListContext",
+      "candidate": "    ref:(ListContext)"
+    },
+    {
+      "line": 102,
+      "source": "instance DocumentContext < LabelContext {",
+      "candidate": "LabelContext \"DocumentContext\" {"
+    },
+    {
+      "line": 108,
+      "source": "instance ClauseContext < LabelContext {",
+      "candidate": "LabelContext \"ClauseContext\" {"
+    },
+    {
+      "line": 110,
+      "source": "  parent = DocumentContext",
+      "candidate": "  parent = ref:(DocumentContext)"
+    },
+    {
+      "line": 114,
+      "source": "instance SubclauseContext < LabelContext {",
+      "candidate": "LabelContext \"SubclauseContext\" {"
+    },
+    {
+      "line": 116,
+      "source": "  parent = ClauseContext",
+      "candidate": "  parent = ref:(ClauseContext)"
+    },
+    {
+      "line": 121,
+      "source": "instance ClauseLabelTemplate < LabelTemplate {",
+      "candidate": "LabelTemplate \"ClauseLabelTemplate\" {"
+    },
+    {
+      "line": 126,
+      "source": "instance ClauseGlobalLabelTemplate < LabelTemplate {",
+      "candidate": "LabelTemplate \"ClauseGlobalLabelTemplate\" {"
+    },
+    {
+      "line": 131,
+      "source": "instance ClauseLabeller < Labeller {",
+      "candidate": "Labeller \"ClauseLabeller\" {"
+    },
+    {
+      "line": 133,
+      "source": "  sequence = ArabicNumericSequence",
+      "candidate": "  sequence = ref:(DecimalNumericSequence)"
+    },
+    {
+      "line": 134,
+      "source": "  context = DocumentContext",
+      "candidate": "  context = ref:(DocumentContext)"
+    },
+    {
+      "line": 136,
+      "source": "  template = ClauseLabelTemplate",
+      "candidate": "  template = ref:(ClauseLabelTemplate)"
+    },
+    {
+      "line": 137,
+      "source": "  global_template = ClauseGlobalLabelTemplate",
+      "candidate": "  global_template = ref:(ClauseGlobalLabelTemplate)"
+    },
+    {
+      "line": 142,
+      "source": "instance SubclauseLabelTemplate < LabelTemplate {",
+      "candidate": "LabelTemplate \"SubclauseLabelTemplate\" {"
+    },
+    {
+      "line": 147,
+      "source": "instance SubclauseGlobalLabelTemplate < LabelTemplate {",
+      "candidate": "LabelTemplate \"SubclauseGlobalLabelTemplate\" {"
+    },
+    {
+      "line": 152,
+      "source": "instance SubclauseLabeller < Labeller {",
+      "candidate": "Labeller \"SubclauseLabeller\" {"
+    },
+    {
+      "line": 154,
+      "source": "  sequence = ArabicNumericSequence",
+      "candidate": "  sequence = ref:(DecimalNumericSequence)"
+    },
+    {
+      "line": 155,
+      "source": "  context = ClauseContext",
+      "candidate": "  context = ref:(ClauseContext)"
+    },
+    {
+      "line": 156,
+      "source": "  parent = ClauseLabeller",
+      "candidate": "  parent = ref:(ClauseLabeller)"
+    },
+    {
+      "line": 158,
+      "source": "  template = SubclauseLabelTemplate",
+      "candidate": "  template = ref:(SubclauseLabelTemplate)"
+    },
+    {
+      "line": 159,
+      "source": "  global_template = SubclauseGlobalLabelTemplate",
+      "candidate": "  global_template = ref:(SubclauseGlobalLabelTemplate)"
+    },
+    {
+      "line": 164,
+      "source": "instance AnnexContext < LabelContext {",
+      "candidate": "LabelContext \"AnnexContext\" {"
+    },
+    {
+      "line": 166,
+      "source": "  parent = DocumentContext",
+      "candidate": "  parent = ref:(DocumentContext)"
+    },
+    {
+      "line": 170,
+      "source": "instance AnnexClauseContext < LabelContext {",
+      "candidate": "LabelContext \"AnnexClauseContext\" {"
+    },
+    {
+      "line": 172,
+      "source": "  parent = AnnexContext",
+      "candidate": "  parent = ref:(AnnexContext)"
+    },
+    {
+      "line": 176,
+      "source": "instance AnnexLabelTemplate < LabelTemplate {",
+      "candidate": "LabelTemplate \"AnnexLabelTemplate\" {"
+    },
+    {
+      "line": 181,
+      "source": "instance AnnexGlobalLabelTemplate < LabelTemplate {",
+      "candidate": "LabelTemplate \"AnnexGlobalLabelTemplate\" {"
+    },
+    {
+      "line": 186,
+      "source": "instance AnnexLabeller < Labeller {",
+      "candidate": "Labeller \"AnnexLabeller\" {"
+    },
+    {
+      "line": 188,
+      "source": "  sequence = AlphaUpperNumericSequence",
+      "candidate": "  sequence = ref:(AlphaUpperNumericSequence)"
+    },
+    {
+      "line": 189,
+      "source": "  context = DocumentContext",
+      "candidate": "  context = ref:(DocumentContext)"
+    },
+    {
+      "line": 191,
+      "source": "  template = AnnexLabelTemplate",
+      "candidate": "  template = ref:(AnnexLabelTemplate)"
+    },
+    {
+      "line": 192,
+      "source": "  global_template = AnnexGlobalLabelTemplate",
+      "candidate": "  global_template = ref:(AnnexGlobalLabelTemplate)"
+    },
+    {
+      "line": 196,
+      "source": "instance AnnexClauseLabelTemplate < LabelTemplate {",
+      "candidate": "LabelTemplate \"AnnexClauseLabelTemplate\" {"
+    },
+    {
+      "line": 201,
+      "source": "instance AnnexClauseGlobalLabelTemplate < LabelTemplate {",
+      "candidate": "LabelTemplate \"AnnexClauseGlobalLabelTemplate\" {"
+    },
+    {
+      "line": 206,
+      "source": "instance AnnexClauseLabeller < Labeller {",
+      "candidate": "Labeller \"AnnexClauseLabeller\" {"
+    },
+    {
+      "line": 208,
+      "source": "  sequence = ArabicNumericSequence",
+      "candidate": "  sequence = ref:(DecimalNumericSequence)"
+    },
+    {
+      "line": 209,
+      "source": "  context = AnnexContext",
+      "candidate": "  context = ref:(AnnexContext)"
+    },
+    {
+      "line": 210,
+      "source": "  parent = AnnexLabeller",
+      "candidate": "  parent = ref:(AnnexLabeller)"
+    },
+    {
+      "line": 212,
+      "source": "  template = AnnexClauseLabelTemplate",
+      "candidate": "  template = ref:(AnnexClauseLabelTemplate)"
+    },
+    {
+      "line": 213,
+      "source": "  global_template = AnnexClauseGlobalLabelTemplate",
+      "candidate": "  global_template = ref:(AnnexClauseGlobalLabelTemplate)"
+    },
+    {
+      "line": 218,
+      "source": "instance FigureLabelTemplate < LabelTemplate {",
+      "candidate": "LabelTemplate \"FigureLabelTemplate\" {"
+    },
+    {
+      "line": 223,
+      "source": "instance FigureGlobalLabelTemplate < LabelTemplate {",
+      "candidate": "LabelTemplate \"FigureGlobalLabelTemplate\" {"
+    },
+    {
+      "line": 228,
+      "source": "instance FigureLabeller < Labeller {",
+      "candidate": "Labeller \"FigureLabeller\" {"
+    },
+    {
+      "line": 230,
+      "source": "  sequence = ArabicNumericSequence",
+      "candidate": "  sequence = ref:(DecimalNumericSequence)"
+    },
+    {
+      "line": 231,
+      "source": "  context = DocumentContext",
+      "candidate": "  context = ref:(DocumentContext)"
+    },
+    {
+      "line": 233,
+      "source": "  template = FigureLabelTemplate",
+      "candidate": "  template = ref:(FigureLabelTemplate)"
+    },
+    {
+      "line": 234,
+      "source": "  global_template = FigureGlobalLabelTemplate",
+      "candidate": "  global_template = ref:(FigureGlobalLabelTemplate)"
+    },
+    {
+      "line": 238,
+      "source": "instance AnnexFigureLabelTemplate < LabelTemplate {",
+      "candidate": "LabelTemplate \"AnnexFigureLabelTemplate\" {"
+    },
+    {
+      "line": 243,
+      "source": "instance AnnexFigureGlobalLabelTemplate < LabelTemplate {",
+      "candidate": "LabelTemplate \"AnnexFigureGlobalLabelTemplate\" {"
+    },
+    {
+      "line": 248,
+      "source": "instance AnnexFigureLabeller < Labeller {",
+      "candidate": "Labeller \"AnnexFigureLabeller\" {"
+    },
+    {
+      "line": 250,
+      "source": "  sequence = ArabicNumericSequence",
+      "candidate": "  sequence = ref:(DecimalNumericSequence)"
+    },
+    {
+      "line": 251,
+      "source": "  context = AnnexContext",
+      "candidate": "  context = ref:(AnnexContext)"
+    },
+    {
+      "line": 252,
+      "source": "  parent = AnnexLabeller",
+      "candidate": "  parent = ref:(AnnexLabeller)"
+    },
+    {
+      "line": 254,
+      "source": "  template = AnnexFigureLabelTemplate",
+      "candidate": "  template = ref:(AnnexFigureLabelTemplate)"
+    },
+    {
+      "line": 255,
+      "source": "  global_template = AnnexFigureGlobalLabelTemplate",
+      "candidate": "  global_template = ref:(AnnexFigureGlobalLabelTemplate)"
+    },
+    {
+      "line": 260,
+      "source": "instance SubfigureLabelTemplate < LabelTemplate {",
+      "candidate": "LabelTemplate \"SubfigureLabelTemplate\" {"
+    },
+    {
+      "line": 265,
+      "source": "instance SubfigureGlobalLabelTemplate < LabelTemplate {",
+      "candidate": "LabelTemplate \"SubfigureGlobalLabelTemplate\" {"
+    },
+    {
+      "line": 270,
+      "source": "instance SubfigureLabeller < Labeller {",
+      "candidate": "Labeller \"SubfigureLabeller\" {"
+    },
+    {
+      "line": 272,
+      "source": "  sequence = AlphaLowerNumericSequence",
+      "candidate": "  sequence = ref:(AlphaLowerNumericSequence)"
+    },
+    {
+      "line": 273,
+      "source": "  context = DocumentContext",
+      "candidate": "  context = ref:(DocumentContext)"
+    },
+    {
+      "line": 274,
+      "source": "  parent = FigureLabeller",
+      "candidate": "  parent = ref:(FigureLabeller)"
+    },
+    {
+      "line": 276,
+      "source": "  template = SubfigureLabelTemplate",
+      "candidate": "  template = ref:(SubfigureLabelTemplate)"
+    },
+    {
+      "line": 277,
+      "source": "  global_template = SubfigureGlobalLabelTemplate",
+      "candidate": "  global_template = ref:(SubfigureGlobalLabelTemplate)"
+    },
+    {
+      "line": 282,
+      "source": "instance TableLabelTemplate < LabelTemplate {",
+      "candidate": "LabelTemplate \"TableLabelTemplate\" {"
+    },
+    {
+      "line": 287,
+      "source": "instance TableGlobalLabelTemplate < LabelTemplate {",
+      "candidate": "LabelTemplate \"TableGlobalLabelTemplate\" {"
+    },
+    {
+      "line": 292,
+      "source": "instance TableLabeller < Labeller {",
+      "candidate": "Labeller \"TableLabeller\" {"
+    },
+    {
+      "line": 294,
+      "source": "  sequence = ArabicNumericSequence",
+      "candidate": "  sequence = ref:(DecimalNumericSequence)"
+    },
+    {
+      "line": 295,
+      "source": "  context = DocumentContext",
+      "candidate": "  context = ref:(DocumentContext)"
+    },
+    {
+      "line": 297,
+      "source": "  template = TableLabelTemplate",
+      "candidate": "  template = ref:(TableLabelTemplate)"
+    },
+    {
+      "line": 298,
+      "source": "  global_template = TableGlobalLabelTemplate",
+      "candidate": "  global_template = ref:(TableGlobalLabelTemplate)"
+    },
+    {
+      "line": 302,
+      "source": "instance AnnexTableLabelTemplate < LabelTemplate {",
+      "candidate": "LabelTemplate \"AnnexTableLabelTemplate\" {"
+    },
+    {
+      "line": 307,
+      "source": "instance AnnexTableGlobalLabelTemplate < LabelTemplate {",
+      "candidate": "LabelTemplate \"AnnexTableGlobalLabelTemplate\" {"
+    },
+    {
+      "line": 312,
+      "source": "instance AnnexTableLabeller < Labeller {",
+      "candidate": "Labeller \"AnnexTableLabeller\" {"
+    },
+    {
+      "line": 314,
+      "source": "  sequence = ArabicNumericSequence",
+      "candidate": "  sequence = ref:(DecimalNumericSequence)"
+    },
+    {
+      "line": 315,
+      "source": "  context = AnnexContext",
+      "candidate": "  context = ref:(AnnexContext)"
+    },
+    {
+      "line": 316,
+      "source": "  parent = AnnexLabeller",
+      "candidate": "  parent = ref:(AnnexLabeller)"
+    },
+    {
+      "line": 318,
+      "source": "  template = AnnexTableLabelTemplate",
+      "candidate": "  template = ref:(AnnexTableLabelTemplate)"
+    },
+    {
+      "line": 319,
+      "source": "  global_template = AnnexTableGlobalLabelTemplate",
+      "candidate": "  global_template = ref:(AnnexTableGlobalLabelTemplate)"
+    },
+    {
+      "line": 324,
+      "source": "instance NoteSingleLabelTemplate < LabelTemplate {",
+      "candidate": "LabelTemplate \"NoteSingleLabelTemplate\" {"
+    },
+    {
+      "line": 329,
+      "source": "instance NoteMultipleLabelTemplate < LabelTemplate {",
+      "candidate": "LabelTemplate \"NoteMultipleLabelTemplate\" {"
+    },
+    {
+      "line": 338,
+      "source": "instance NoteSingleGlobalLabelTemplate < LabelTemplate {",
+      "candidate": "LabelTemplate \"NoteSingleGlobalLabelTemplate\" {"
+    },
+    {
+      "line": 343,
+      "source": "instance NoteMultipleGlobalLabelTemplate < LabelTemplate {",
+      "candidate": "LabelTemplate \"NoteMultipleGlobalLabelTemplate\" {"
+    },
+    {
+      "line": 352,
+      "source": "instance NoteLabeller < Labeller {",
+      "candidate": "Labeller \"NoteLabeller\" {"
+    },
+    {
+      "line": 354,
+      "source": "  sequence = ArabicNumericSequence",
+      "candidate": "  sequence = ref:(DecimalNumericSequence)"
+    },
+    {
+      "line": 355,
+      "source": "  context = ClauseContext",
+      "candidate": "  context = ref:(ClauseContext)"
+    },
+    {
+      "line": 357,
+      "source": "  template = [NoteSingleLabelTemplate, NoteMultipleLabelTemplate]",
+      "candidate": "  template = [ref:(NoteSingleLabelTemplate), ref:(NoteMultipleLabelTemplate)]"
+    },
+    {
+      "line": 358,
+      "source": "  global_template = [NoteSingleGlobalLabelTemplate, NoteMultipleGlobalLabelTemplate]",
+      "candidate": "  global_template = [ref:(NoteSingleGlobalLabelTemplate), ref:(NoteMultipleGlobalLabelTemplate)]"
+    },
+    {
+      "line": 363,
+      "source": "instance ExampleSingleLabelTemplate < LabelTemplate {",
+      "candidate": "LabelTemplate \"ExampleSingleLabelTemplate\" {"
+    },
+    {
+      "line": 368,
+      "source": "instance ExampleMultipleLabelTemplate < LabelTemplate {",
+      "candidate": "LabelTemplate \"ExampleMultipleLabelTemplate\" {"
+    },
+    {
+      "line": 377,
+      "source": "instance ExampleSingleGlobalLabelTemplate < LabelTemplate {",
+      "candidate": "LabelTemplate \"ExampleSingleGlobalLabelTemplate\" {"
+    },
+    {
+      "line": 382,
+      "source": "instance ExampleMultipleGlobalLabelTemplate < LabelTemplate {",
+      "candidate": "LabelTemplate \"ExampleMultipleGlobalLabelTemplate\" {"
+    },
+    {
+      "line": 391,
+      "source": "instance ExampleLabeller < Labeller {",
+      "candidate": "Labeller \"ExampleLabeller\" {"
+    },
+    {
+      "line": 393,
+      "source": "  sequence = ArabicNumericSequence",
+      "candidate": "  sequence = ref:(DecimalNumericSequence)"
+    },
+    {
+      "line": 394,
+      "source": "  context = ClauseContext",
+      "candidate": "  context = ref:(ClauseContext)"
+    },
+    {
+      "line": 396,
+      "source": "  template = [ExampleSingleLabelTemplate, ExampleMultipleLabelTemplate]",
+      "candidate": "  template = [ref:(ExampleSingleLabelTemplate), ref:(ExampleMultipleLabelTemplate)]"
+    },
+    {
+      "line": 397,
+      "source": "  global_template = [ExampleSingleGlobalLabelTemplate, ExampleMultipleGlobalLabelTemplate]",
+      "candidate": "  global_template = [ref:(ExampleSingleGlobalLabelTemplate), ref:(ExampleMultipleGlobalLabelTemplate)]"
+    },
+    {
+      "line": 402,
+      "source": "instance FormulaLabelTemplate < LabelTemplate {",
+      "candidate": "LabelTemplate \"FormulaLabelTemplate\" {"
+    },
+    {
+      "line": 407,
+      "source": "instance FormulaGlobalLabelTemplate < LabelTemplate {",
+      "candidate": "LabelTemplate \"FormulaGlobalLabelTemplate\" {"
+    },
+    {
+      "line": 412,
+      "source": "instance FormulaLabeller < Labeller {",
+      "candidate": "Labeller \"FormulaLabeller\" {"
+    },
+    {
+      "line": 414,
+      "source": "  sequence = ArabicNumericSequence",
+      "candidate": "  sequence = ref:(DecimalNumericSequence)"
+    },
+    {
+      "line": 415,
+      "source": "  context = DocumentContext",
+      "candidate": "  context = ref:(DocumentContext)"
+    },
+    {
+      "line": 417,
+      "source": "  template = FormulaLabelTemplate",
+      "candidate": "  template = ref:(FormulaLabelTemplate)"
+    },
+    {
+      "line": 418,
+      "source": "  global_template = FormulaGlobalLabelTemplate",
+      "candidate": "  global_template = ref:(FormulaGlobalLabelTemplate)"
+    },
+    {
+      "line": 422,
+      "source": "instance AnnexFormulaLabelTemplate < LabelTemplate {",
+      "candidate": "LabelTemplate \"AnnexFormulaLabelTemplate\" {"
+    },
+    {
+      "line": 427,
+      "source": "instance AnnexFormulaGlobalLabelTemplate < LabelTemplate {",
+      "candidate": "LabelTemplate \"AnnexFormulaGlobalLabelTemplate\" {"
+    },
+    {
+      "line": 432,
+      "source": "instance AnnexFormulaLabeller < Labeller {",
+      "candidate": "Labeller \"AnnexFormulaLabeller\" {"
+    },
+    {
+      "line": 434,
+      "source": "  sequence = ArabicNumericSequence",
+      "candidate": "  sequence = ref:(DecimalNumericSequence)"
+    },
+    {
+      "line": 435,
+      "source": "  context = AnnexContext",
+      "candidate": "  context = ref:(AnnexContext)"
+    },
+    {
+      "line": 436,
+      "source": "  parent = AnnexLabeller",
+      "candidate": "  parent = ref:(AnnexLabeller)"
+    },
+    {
+      "line": 438,
+      "source": "  template = AnnexFormulaLabelTemplate",
+      "candidate": "  template = ref:(AnnexFormulaLabelTemplate)"
+    },
+    {
+      "line": 439,
+      "source": "  global_template = AnnexFormulaGlobalLabelTemplate",
+      "candidate": "  global_template = ref:(AnnexFormulaGlobalLabelTemplate)"
+    },
+    {
+      "line": 444,
+      "source": "instance ListContext < LabelContext {",
+      "candidate": "LabelContext \"ListContext\" {"
+    },
+    {
+      "line": 446,
+      "source": "  parent = ClauseContext",
+      "candidate": "  parent = ref:(ClauseContext)"
+    },
+    {
+      "line": 450,
+      "source": "instance ListLabelTemplate < LabelTemplate {",
+      "candidate": "LabelTemplate \"ListLabelTemplate\" {"
+    },
+    {
+      "line": 455,
+      "source": "instance ListGlobalLabelTemplate < LabelTemplate {",
+      "candidate": "LabelTemplate \"ListGlobalLabelTemplate\" {"
+    },
+    {
+      "line": 460,
+      "source": "instance ListLabeller < Labeller {",
+      "candidate": "Labeller \"ListLabeller\" {"
+    },
+    {
+      "line": 462,
+      "source": "  sequence = ArabicNumericSequence",
+      "candidate": "  sequence = ref:(DecimalNumericSequence)"
+    },
+    {
+      "line": 463,
+      "source": "  context = ClauseContext",
+      "candidate": "  context = ref:(ClauseContext)"
+    },
+    {
+      "line": 465,
+      "source": "  template = ListLabelTemplate",
+      "candidate": "  template = ref:(ListLabelTemplate)"
+    },
+    {
+      "line": 466,
+      "source": "  global_template = ListGlobalLabelTemplate",
+      "candidate": "  global_template = ref:(ListGlobalLabelTemplate)"
+    },
+    {
+      "line": 470,
+      "source": "instance AnnexListLabelTemplate < LabelTemplate {",
+      "candidate": "LabelTemplate \"AnnexListLabelTemplate\" {"
+    },
+    {
+      "line": 475,
+      "source": "instance AnnexListGlobalLabelTemplate < LabelTemplate {",
+      "candidate": "LabelTemplate \"AnnexListGlobalLabelTemplate\" {"
+    },
+    {
+      "line": 480,
+      "source": "instance AnnexListLabeller < Labeller {",
+      "candidate": "Labeller \"AnnexListLabeller\" {"
+    },
+    {
+      "line": 482,
+      "source": "  sequence = ArabicNumericSequence",
+      "candidate": "  sequence = ref:(DecimalNumericSequence)"
+    },
+    {
+      "line": 483,
+      "source": "  context = AnnexContext",
+      "candidate": "  context = ref:(AnnexContext)"
+    },
+    {
+      "line": 484,
+      "source": "  parent = AnnexLabeller",
+      "candidate": "  parent = ref:(AnnexLabeller)"
+    },
+    {
+      "line": 486,
+      "source": "  template = AnnexListLabelTemplate",
+      "candidate": "  template = ref:(AnnexListLabelTemplate)"
+    },
+    {
+      "line": 487,
+      "source": "  global_template = AnnexListGlobalLabelTemplate",
+      "candidate": "  global_template = ref:(AnnexListGlobalLabelTemplate)"
+    },
+    {
+      "line": 492,
+      "source": "instance UnorderedListItemLabelTemplate < LabelTemplate {",
+      "candidate": "LabelTemplate \"UnorderedListItemLabelTemplate\" {"
+    },
+    {
+      "line": 497,
+      "source": "instance UnorderedListItemLabeller < Labeller {",
+      "candidate": "Labeller \"UnorderedListItemLabeller\" {"
+    },
+    {
+      "line": 500,
+      "source": "  context = ListContext",
+      "candidate": "  context = ref:(ListContext)"
+    },
+    {
+      "line": 502,
+      "source": "  template = UnorderedListItemLabelTemplate",
+      "candidate": "  template = ref:(UnorderedListItemLabelTemplate)"
+    },
+    {
+      "line": 507,
+      "source": "instance OrderedListItemLevel1LabelTemplate < LabelTemplate {",
+      "candidate": "LabelTemplate \"OrderedListItemLevel1LabelTemplate\" {"
+    },
+    {
+      "line": 512,
+      "source": "instance OrderedListItemLevel1Labeller < Labeller {",
+      "candidate": "Labeller \"OrderedListItemLevel1Labeller\" {"
+    },
+    {
+      "line": 514,
+      "source": "  sequence = AlphaLowerNumericSequence",
+      "candidate": "  sequence = ref:(AlphaLowerNumericSequence)"
+    },
+    {
+      "line": 515,
+      "source": "  context = ListContext",
+      "candidate": "  context = ref:(ListContext)"
+    },
+    {
+      "line": 517,
+      "source": "  template = OrderedListItemLevel1LabelTemplate",
+      "candidate": "  template = ref:(OrderedListItemLevel1LabelTemplate)"
+    },
+    {
+      "line": 522,
+      "source": "instance OrderedListItemLevel2LabelTemplate < LabelTemplate {",
+      "candidate": "LabelTemplate \"OrderedListItemLevel2LabelTemplate\" {"
+    },
+    {
+      "line": 527,
+      "source": "instance OrderedListItemLevel2Labeller < Labeller {",
+      "candidate": "Labeller \"OrderedListItemLevel2Labeller\" {"
+    },
+    {
+      "line": 529,
+      "source": "  sequence = ArabicNumericSequence",
+      "candidate": "  sequence = ref:(DecimalNumericSequence)"
+    },
+    {
+      "line": 530,
+      "source": "  context = ListContext",
+      "candidate": "  context = ref:(ListContext)"
+    },
+    {
+      "line": 531,
+      "source": "  parent = OrderedListItemLevel1Labeller",
+      "candidate": "  parent = ref:(OrderedListItemLevel1Labeller)"
+    },
+    {
+      "line": 533,
+      "source": "  template = OrderedListItemLevel2LabelTemplate",
+      "candidate": "  template = ref:(OrderedListItemLevel2LabelTemplate)"
+    },
+    {
+      "line": 538,
+      "source": "instance OrderedListItemLevel3LabelTemplate < LabelTemplate {",
+      "candidate": "LabelTemplate \"OrderedListItemLevel3LabelTemplate\" {"
+    },
+    {
+      "line": 543,
+      "source": "instance OrderedListItemLevel3Labeller < Labeller {",
+      "candidate": "Labeller \"OrderedListItemLevel3Labeller\" {"
+    },
+    {
+      "line": 545,
+      "source": "  sequence = RomanLowerNumericSequence",
+      "candidate": "  sequence = ref:(RomanLowerNumericSequence)"
+    },
+    {
+      "line": 546,
+      "source": "  context = ListContext",
+      "candidate": "  context = ref:(ListContext)"
+    },
+    {
+      "line": 547,
+      "source": "  parent = OrderedListItemLevel2Labeller",
+      "candidate": "  parent = ref:(OrderedListItemLevel2Labeller)"
+    },
+    {
+      "line": 549,
+      "source": "  template = OrderedListItemLevel3LabelTemplate",
+      "candidate": "  template = ref:(OrderedListItemLevel3LabelTemplate)"
+    },
+    {
+      "line": 554,
+      "source": "instance OrderedListItemLevel4LabelTemplate < LabelTemplate {",
+      "candidate": "LabelTemplate \"OrderedListItemLevel4LabelTemplate\" {"
+    },
+    {
+      "line": 559,
+      "source": "instance OrderedListItemLevel4Labeller < Labeller {",
+      "candidate": "Labeller \"OrderedListItemLevel4Labeller\" {"
+    },
+    {
+      "line": 561,
+      "source": "  sequence = AlphaLowerNumericSequence",
+      "candidate": "  sequence = ref:(AlphaLowerNumericSequence)"
+    },
+    {
+      "line": 562,
+      "source": "  context = ListContext",
+      "candidate": "  context = ref:(ListContext)"
+    },
+    {
+      "line": 563,
+      "source": "  parent = OrderedListItemLevel3Labeller",
+      "candidate": "  parent = ref:(OrderedListItemLevel3Labeller)"
+    },
+    {
+      "line": 565,
+      "source": "  template = OrderedListItemLevel4LabelTemplate",
+      "candidate": "  template = ref:(OrderedListItemLevel4LabelTemplate)"
+    },
+    {
+      "line": 499,
+      "source": "  sequence = ArabicNumericSequence  // Not used but required",
+      "candidate": "  sequence = ref:(DecimalNumericSequence)  // Not used but required"
+    }
+  ],
+  "meaning": [
+    "Use supported canonical typed instance declarations",
+    "Use explicit LML reference literals",
+    "ISO selects DecimalNumericSequence rather than Arabic-script digits"
+  ]
+}

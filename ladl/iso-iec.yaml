@@ -1,0 +1,627 @@
+---
+schema: mn112/1
+instances:
+- name: ISOIECLabelStyle
+  type: LabelStyle
+  properties:
+    name: ISO/IEC Label Style
+    definition: "\n    The ISO/IEC label style originates from and implements the
+      requirements of:\n    * the ISO/IEC Directives, Part 2\n    * the ISO House
+      Style.\n\n    This style defines the labeling scheme used by ISO/IEC deliverables.\n
+      \ "
+    labellers:
+    - id:clause_labeller
+    - id:subclause_labeller
+    - id:annex_labeller
+    - id:annex_clause_labeller
+    - id:figure_labeller
+    - id:annex_figure_labeller
+    - id:subfigure_labeller
+    - id:table_labeller
+    - id:annex_table_labeller
+    - id:note_labeller
+    - id:example_labeller
+    - id:formula_labeller
+    - id:annex_formula_labeller
+    - id:list_labeller
+    - id:annex_list_labeller
+    - id:unordered_list_item_labeller
+    - id:ordered_list_item_level1_labeller
+    - id:ordered_list_item_level2_labeller
+    - id:ordered_list_item_level3_labeller
+    - id:ordered_list_item_level4_labeller
+    sequences:
+    - ref: DecimalNumericSequence
+    - ref: AlphaLowerNumericSequence
+    - ref: AlphaUpperNumericSequence
+    - ref: RomanLowerNumericSequence
+    templates:
+    - ref: ClauseLabelTemplate
+    - ref: ClauseGlobalLabelTemplate
+    - ref: SubclauseLabelTemplate
+    - ref: SubclauseGlobalLabelTemplate
+    - ref: AnnexLabelTemplate
+    - ref: AnnexGlobalLabelTemplate
+    - ref: AnnexClauseLabelTemplate
+    - ref: AnnexClauseGlobalLabelTemplate
+    - ref: FigureLabelTemplate
+    - ref: FigureGlobalLabelTemplate
+    - ref: AnnexFigureLabelTemplate
+    - ref: AnnexFigureGlobalLabelTemplate
+    - ref: SubfigureLabelTemplate
+    - ref: SubfigureGlobalLabelTemplate
+    - ref: TableLabelTemplate
+    - ref: TableGlobalLabelTemplate
+    - ref: AnnexTableLabelTemplate
+    - ref: AnnexTableGlobalLabelTemplate
+    - ref: NoteSingleLabelTemplate
+    - ref: NoteMultipleLabelTemplate
+    - ref: NoteSingleGlobalLabelTemplate
+    - ref: NoteMultipleGlobalLabelTemplate
+    - ref: ExampleSingleLabelTemplate
+    - ref: ExampleMultipleLabelTemplate
+    - ref: ExampleSingleGlobalLabelTemplate
+    - ref: ExampleMultipleGlobalLabelTemplate
+    - ref: FormulaLabelTemplate
+    - ref: FormulaGlobalLabelTemplate
+    - ref: AnnexFormulaLabelTemplate
+    - ref: AnnexFormulaGlobalLabelTemplate
+    - ref: ListLabelTemplate
+    - ref: ListGlobalLabelTemplate
+    - ref: AnnexListLabelTemplate
+    - ref: AnnexListGlobalLabelTemplate
+    - ref: UnorderedListItemLabelTemplate
+    - ref: OrderedListItemLevel1LabelTemplate
+    - ref: OrderedListItemLevel2LabelTemplate
+    - ref: OrderedListItemLevel3LabelTemplate
+    - ref: OrderedListItemLevel4LabelTemplate
+    contexts:
+    - ref: DocumentContext
+    - ref: ClauseContext
+    - ref: SubclauseContext
+    - ref: AnnexContext
+    - ref: AnnexClauseContext
+    - ref: ListContext
+- name: DocumentContext
+  type: LabelContext
+  properties:
+    name: document
+    definition: '{string: "Top-level document context for ISO/IEC documents"@3247}'
+- name: ClauseContext
+  type: LabelContext
+  properties:
+    name: clause
+    parent:
+      ref: DocumentContext
+    definition: '{string: "Context for clauses within the main document"@3415}'
+- name: SubclauseContext
+  type: LabelContext
+  properties:
+    name: subclause
+    parent:
+      ref: ClauseContext
+    definition: '{string: "Context for subclauses within clauses"@3564}'
+- name: ClauseLabelTemplate
+  type: LabelTemplate
+  properties:
+    pattern: Clause %n
+    definition: '{string: "Template for local clause references"@3702}'
+- name: ClauseGlobalLabelTemplate
+  type: LabelTemplate
+  properties:
+    pattern: Clause %n
+    definition: '{string: "Template for global clause references"@3825}'
+- name: ClauseLabeller
+  type: Labeller
+  properties:
+    id: clause_labeller
+    sequence:
+      ref: DecimalNumericSequence
+    context:
+      ref: DocumentContext
+    type: clause
+    template:
+      ref: ClauseLabelTemplate
+    global_template:
+      ref: ClauseGlobalLabelTemplate
+    definition: '{string: "Labeller for clauses in the main document"@4119}'
+- name: SubclauseLabelTemplate
+  type: LabelTemplate
+  properties:
+    pattern: "%pn.%n"
+    definition: '{string: "Template for local subclause references"@4264}'
+- name: SubclauseGlobalLabelTemplate
+  type: LabelTemplate
+  properties:
+    pattern: "%pn.%n"
+    definition: '{string: "Template for global subclause references"@4390}'
+- name: SubclauseLabeller
+  type: Labeller
+  properties:
+    id: subclause_labeller
+    sequence:
+      ref: DecimalNumericSequence
+    context:
+      ref: ClauseContext
+    parent:
+      ref: ClauseLabeller
+    type: subclause
+    template:
+      ref: SubclauseLabelTemplate
+    global_template:
+      ref: SubclauseGlobalLabelTemplate
+    definition: '{string: "Labeller for subclauses within clauses"@4732}'
+- name: AnnexContext
+  type: LabelContext
+  properties:
+    name: annex
+    parent:
+      ref: DocumentContext
+    definition: '{string: "Context for annexes within the document"@4887}'
+- name: AnnexClauseContext
+  type: LabelContext
+  properties:
+    name: annex_clause
+    parent:
+      ref: AnnexContext
+    definition: '{string: "Context for clauses within annexes"@5035}'
+- name: AnnexLabelTemplate
+  type: LabelTemplate
+  properties:
+    pattern: Annex %n
+    definition: '{string: "Template for local annex references"@5148}'
+- name: AnnexGlobalLabelTemplate
+  type: LabelTemplate
+  properties:
+    pattern: Annex %n
+    definition: '{string: "Template for global annex references"@5268}'
+- name: AnnexLabeller
+  type: Labeller
+  properties:
+    id: annex_labeller
+    sequence:
+      ref: AlphaUpperNumericSequence
+    context:
+      ref: DocumentContext
+    type: annex
+    template:
+      ref: AnnexLabelTemplate
+    global_template:
+      ref: AnnexGlobalLabelTemplate
+    definition: '{string: "Labeller for annexes in the document"@5559}'
+- name: AnnexClauseLabelTemplate
+  type: LabelTemplate
+  properties:
+    pattern: "%pn.%n"
+    definition: '{string: "Template for local annex clause references"@5678}'
+- name: AnnexClauseGlobalLabelTemplate
+  type: LabelTemplate
+  properties:
+    pattern: "%pn.%n"
+    definition: '{string: "Template for global annex clause references"@5809}'
+- name: AnnexClauseLabeller
+  type: Labeller
+  properties:
+    id: annex_clause_labeller
+    sequence:
+      ref: DecimalNumericSequence
+    context:
+      ref: AnnexContext
+    parent:
+      ref: AnnexLabeller
+    type: clause
+    template:
+      ref: AnnexClauseLabelTemplate
+    global_template:
+      ref: AnnexClauseGlobalLabelTemplate
+    definition: '{string: "Labeller for clauses within annexes"@6158}'
+- name: FigureLabelTemplate
+  type: LabelTemplate
+  properties:
+    pattern: Figure %n
+    definition: '{string: "Template for local figure references in the main document"@6293}'
+- name: FigureGlobalLabelTemplate
+  type: LabelTemplate
+  properties:
+    pattern: Figure %n
+    definition: '{string: "Template for global figure references in the main document"@6437}'
+- name: FigureLabeller
+  type: Labeller
+  properties:
+    id: figure_labeller
+    sequence:
+      ref: DecimalNumericSequence
+    context:
+      ref: DocumentContext
+    type: figure
+    template:
+      ref: FigureLabelTemplate
+    global_template:
+      ref: FigureGlobalLabelTemplate
+    definition: '{string: "Labeller for figures in the main document"@6752}'
+- name: AnnexFigureLabelTemplate
+  type: LabelTemplate
+  properties:
+    pattern: Figure %pn.%n
+    definition: '{string: "Template for local figure references in annexes"@6883}'
+- name: AnnexFigureGlobalLabelTemplate
+  type: LabelTemplate
+  properties:
+    pattern: Figure %pn.%n
+    definition: '{string: "Template for global figure references in annexes"@7026}'
+- name: AnnexFigureLabeller
+  type: Labeller
+  properties:
+    id: annex_figure_labeller
+    sequence:
+      ref: DecimalNumericSequence
+    context:
+      ref: AnnexContext
+    parent:
+      ref: AnnexLabeller
+    type: figure
+    template:
+      ref: AnnexFigureLabelTemplate
+    global_template:
+      ref: AnnexFigureGlobalLabelTemplate
+    definition: '{string: "Labeller for figures in annexes"@7380}'
+- name: SubfigureLabelTemplate
+  type: LabelTemplate
+  properties:
+    pattern: Figure %pn %n)
+    definition: '{string: "Template for local subfigure references"@7522}'
+- name: SubfigureGlobalLabelTemplate
+  type: LabelTemplate
+  properties:
+    pattern: Figure %pn %n)
+    definition: '{string: "Template for global subfigure references"@7656}'
+- name: SubfigureLabeller
+  type: Labeller
+  properties:
+    id: subfigure_labeller
+    sequence:
+      ref: AlphaLowerNumericSequence
+    context:
+      ref: DocumentContext
+    parent:
+      ref: FigureLabeller
+    type: subfigure
+    template:
+      ref: SubfigureLabelTemplate
+    global_template:
+      ref: SubfigureGlobalLabelTemplate
+    definition: '{string: "Labeller for subfigures in the document"@8003}'
+- name: TableLabelTemplate
+  type: LabelTemplate
+  properties:
+    pattern: Table %n
+    definition: '{string: "Template for local table references in the main document"@8139}'
+- name: TableGlobalLabelTemplate
+  type: LabelTemplate
+  properties:
+    pattern: Table %n
+    definition: '{string: "Template for global table references in the main document"@8280}'
+- name: TableLabeller
+  type: Labeller
+  properties:
+    id: table_labeller
+    sequence:
+      ref: DecimalNumericSequence
+    context:
+      ref: DocumentContext
+    type: table
+    template:
+      ref: TableLabelTemplate
+    global_template:
+      ref: TableGlobalLabelTemplate
+    definition: '{string: "Labeller for tables in the main document"@8589}'
+- name: AnnexTableLabelTemplate
+  type: LabelTemplate
+  properties:
+    pattern: Table %pn.%n
+    definition: '{string: "Template for local table references in annexes"@8717}'
+- name: AnnexTableGlobalLabelTemplate
+  type: LabelTemplate
+  properties:
+    pattern: Table %pn.%n
+    definition: '{string: "Template for global table references in annexes"@8857}'
+- name: AnnexTableLabeller
+  type: Labeller
+  properties:
+    id: annex_table_labeller
+    sequence:
+      ref: DecimalNumericSequence
+    context:
+      ref: AnnexContext
+    parent:
+      ref: AnnexLabeller
+    type: table
+    template:
+      ref: AnnexTableLabelTemplate
+    global_template:
+      ref: AnnexTableGlobalLabelTemplate
+    definition: '{string: "Labeller for tables in annexes"@9205}'
+- name: NoteSingleLabelTemplate
+  type: LabelTemplate
+  properties:
+    pattern: NOTE
+    definition: '{string: "Template for single note references"@9332}'
+- name: NoteMultipleLabelTemplate
+  type: LabelTemplate
+  properties:
+    pattern: NOTE %n
+    definition: '{string: "Template for multiple note references"@9452}'
+    condition:
+      type: element_count_gt
+      threshold: 1
+- name: NoteSingleGlobalLabelTemplate
+  type: LabelTemplate
+  properties:
+    pattern: "%parent, NOTE"
+    definition: '{string: "Template for global single note references"@9652}'
+- name: NoteMultipleGlobalLabelTemplate
+  type: LabelTemplate
+  properties:
+    pattern: "%parent, NOTE %n"
+    definition: '{string: "Template for global multiple note references"@9794}'
+    condition:
+      type: element_count_gt
+      threshold: 1
+- name: NoteLabeller
+  type: Labeller
+  properties:
+    id: note_labeller
+    sequence:
+      ref: DecimalNumericSequence
+    context:
+      ref: ClauseContext
+    type: note
+    template:
+    - ref: NoteSingleLabelTemplate
+    - ref: NoteMultipleLabelTemplate
+    global_template:
+    - ref: NoteSingleGlobalLabelTemplate
+    - ref: NoteMultipleGlobalLabelTemplate
+    definition: '{string: "Labeller for notes in clauses with conditional templates
+      based on note count"@10239}'
+- name: ExampleSingleLabelTemplate
+  type: LabelTemplate
+  properties:
+    pattern: EXAMPLE
+    definition: '{string: "Template for single example references"@10421}'
+- name: ExampleMultipleLabelTemplate
+  type: LabelTemplate
+  properties:
+    pattern: EXAMPLE %n
+    definition: '{string: "Template for multiple example references"@10550}'
+    condition:
+      type: element_count_gt
+      threshold: 1
+- name: ExampleSingleGlobalLabelTemplate
+  type: LabelTemplate
+  properties:
+    pattern: "%parent, EXAMPLE"
+    definition: '{string: "Template for global single example references"@10759}'
+- name: ExampleMultipleGlobalLabelTemplate
+  type: LabelTemplate
+  properties:
+    pattern: "%parent, EXAMPLE %n"
+    definition: '{string: "Template for global multiple example references"@10910}'
+    condition:
+      type: element_count_gt
+      threshold: 1
+- name: ExampleLabeller
+  type: Labeller
+  properties:
+    id: example_labeller
+    sequence:
+      ref: DecimalNumericSequence
+    context:
+      ref: ClauseContext
+    type: example
+    template:
+    - ref: ExampleSingleLabelTemplate
+    - ref: ExampleMultipleLabelTemplate
+    global_template:
+    - ref: ExampleSingleGlobalLabelTemplate
+    - ref: ExampleMultipleGlobalLabelTemplate
+    definition: '{string: "Labeller for examples in clauses with conditional templates
+      based on example count"@11379}'
+- name: FormulaLabelTemplate
+  type: LabelTemplate
+  properties:
+    pattern: "(%n)"
+    definition: '{string: "Template for local formula references in the main document"@11558}'
+- name: FormulaGlobalLabelTemplate
+  type: LabelTemplate
+  properties:
+    pattern: Formula (%n)
+    definition: '{string: "Template for global formula references in the main document"@11707}'
+- name: FormulaLabeller
+  type: Labeller
+  properties:
+    id: formula_labeller
+    sequence:
+      ref: DecimalNumericSequence
+    context:
+      ref: DocumentContext
+    type: formula
+    template:
+      ref: FormulaLabelTemplate
+    global_template:
+      ref: FormulaGlobalLabelTemplate
+    definition: '{string: "Labeller for formulas in the main document"@12028}'
+- name: AnnexFormulaLabelTemplate
+  type: LabelTemplate
+  properties:
+    pattern: "(%pn.%n)"
+    definition: '{string: "Template for local formula references in annexes"@12156}'
+- name: AnnexFormulaGlobalLabelTemplate
+  type: LabelTemplate
+  properties:
+    pattern: Formula (%pn.%n)
+    definition: '{string: "Template for global formula references in annexes"@12304}'
+- name: AnnexFormulaLabeller
+  type: Labeller
+  properties:
+    id: annex_formula_labeller
+    sequence:
+      ref: DecimalNumericSequence
+    context:
+      ref: AnnexContext
+    parent:
+      ref: AnnexLabeller
+    type: formula
+    template:
+      ref: AnnexFormulaLabelTemplate
+    global_template:
+      ref: AnnexFormulaGlobalLabelTemplate
+    definition: '{string: "Labeller for formulas in annexes"@12664}'
+- name: ListContext
+  type: LabelContext
+  properties:
+    name: list
+    parent:
+      ref: ClauseContext
+    definition: '{string: "Context for lists within clauses"@12808}'
+- name: ListLabelTemplate
+  type: LabelTemplate
+  properties:
+    pattern: List %n
+    definition: '{string: "Template for local list references in the main document"@12917}'
+- name: ListGlobalLabelTemplate
+  type: LabelTemplate
+  properties:
+    pattern: List %n
+    definition: '{string: "Template for global list references in the main document"@13055}'
+- name: ListLabeller
+  type: Labeller
+  properties:
+    id: list_labeller
+    sequence:
+      ref: DecimalNumericSequence
+    context:
+      ref: ClauseContext
+    type: list
+    template:
+      ref: ListLabelTemplate
+    global_template:
+      ref: ListGlobalLabelTemplate
+    definition: '{string: "Labeller for lists in the main document"@13356}'
+- name: AnnexListLabelTemplate
+  type: LabelTemplate
+  properties:
+    pattern: List %pn.%n
+    definition: '{string: "Template for local list references in annexes"@13481}'
+- name: AnnexListGlobalLabelTemplate
+  type: LabelTemplate
+  properties:
+    pattern: List %pn.%n
+    definition: '{string: "Template for global list references in annexes"@13618}'
+- name: AnnexListLabeller
+  type: Labeller
+  properties:
+    id: annex_list_labeller
+    sequence:
+      ref: DecimalNumericSequence
+    context:
+      ref: AnnexContext
+    parent:
+      ref: AnnexLabeller
+    type: list
+    template:
+      ref: AnnexListLabelTemplate
+    global_template:
+      ref: AnnexListGlobalLabelTemplate
+    definition: '{string: "Labeller for lists in annexes"@13960}'
+- name: UnorderedListItemLabelTemplate
+  type: LabelTemplate
+  properties:
+    pattern: "—"
+    definition: '{string: "Template for unordered list items at all levels"@14109}'
+- name: UnorderedListItemLabeller
+  type: Labeller
+  properties:
+    id: unordered_list_item_labeller
+    sequence:
+      ref: DecimalNumericSequence
+    context:
+      ref: ListContext
+    type: list_item_unordered
+    template:
+      ref: UnorderedListItemLabelTemplate
+    definition: '{string: "Labeller for unordered list items"@14431}'
+- name: OrderedListItemLevel1LabelTemplate
+  type: LabelTemplate
+  properties:
+    pattern: "%n)"
+    definition: '{string: "Template for first level ordered list items"@14611}'
+- name: OrderedListItemLevel1Labeller
+  type: Labeller
+  properties:
+    id: ordered_list_item_level1_labeller
+    sequence:
+      ref: AlphaLowerNumericSequence
+    context:
+      ref: ListContext
+    type: list_item_ordered_level1
+    template:
+      ref: OrderedListItemLevel1LabelTemplate
+    definition: '{string: "Labeller for first level ordered list items"@14924}'
+- name: OrderedListItemLevel2LabelTemplate
+  type: LabelTemplate
+  properties:
+    pattern: "%n)"
+    definition: '{string: "Template for second level ordered list items"@15114}'
+- name: OrderedListItemLevel2Labeller
+  type: Labeller
+  properties:
+    id: ordered_list_item_level2_labeller
+    sequence:
+      ref: DecimalNumericSequence
+    context:
+      ref: ListContext
+    parent:
+      ref: OrderedListItemLevel1Labeller
+    type: list_item_ordered_level2
+    template:
+      ref: OrderedListItemLevel2LabelTemplate
+    definition: '{string: "Labeller for second level ordered list items"@15472}'
+- name: OrderedListItemLevel3LabelTemplate
+  type: LabelTemplate
+  properties:
+    pattern: "%n)"
+    definition: '{string: "Template for third level ordered list items"@15666}'
+- name: OrderedListItemLevel3Labeller
+  type: Labeller
+  properties:
+    id: ordered_list_item_level3_labeller
+    sequence:
+      ref: RomanLowerNumericSequence
+    context:
+      ref: ListContext
+    parent:
+      ref: OrderedListItemLevel2Labeller
+    type: list_item_ordered_level3
+    template:
+      ref: OrderedListItemLevel3LabelTemplate
+    definition: '{string: "Labeller for third level ordered list items"@16026}'
+- name: OrderedListItemLevel4LabelTemplate
+  type: LabelTemplate
+  properties:
+    pattern: "%n)"
+    definition: '{string: "Template for fourth level ordered list items"@16238}'
+- name: OrderedListItemLevel4Labeller
+  type: Labeller
+  properties:
+    id: ordered_list_item_level4_labeller
+    sequence:
+      ref: AlphaLowerNumericSequence
+    context:
+      ref: ListContext
+    parent:
+      ref: OrderedListItemLevel3Labeller
+    type: list_item_ordered_level4
+    template:
+      ref: OrderedListItemLevel4LabelTemplate
+    definition: '{string: "Labeller for fourth level ordered list items"@16599}'

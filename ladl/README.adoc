@@ -1,0 +1,71 @@
+= ISO/IEC LADL candidate profile
+
+This package contains a traceable realization of the MN 112 worked ISO/IEC
+profile, sourced from `metanorma/docs` commit
+`97f6e8bc42b571c8b80c348c0a33027bde89f0eb`,
+`sources/112/iso_iec_label_style.lml`.
+
+`iso-iec.lml` and `iso-iec.yaml` normalize to identical typed instance data.
+All 66 declarations are retained: one LabelStyle, six LabelContexts,
+39 LabelTemplates and 20 Labellers. Four referenced built-in sequences are
+resolved explicitly. `source-corrections.json` records every source-line change.
+The untouched upstream file is a regression fixture outside the package runtime.
+
+== Explicit source corrections
+
+* Draft `instance Name < Type` headers are realized using supported canonical
+  `Type "Name"` LML syntax.
+* References use supported `ref:(Name)` literals instead of opaque bare values.
+* This ISO profile selects `DecimalNumericSequence`. MN 112 distinguishes decimal
+  digits from the Arabic-script digits of `ArabicNumericSequence`; the engine
+  preserves that distinction and does not alias the two sequences.
+
+The original draft syntax is rejected, not automatically rewritten at runtime.
+LML parsing, quoting and string unescaping use the real `lutaml-lml` parser API.
+YAML uses a safe, duplicate-key-rejecting `mn112/1` instance representation;
+references are maps with a single `ref` key.
+
+== Engine use
+
+[source,ruby]
+----
+profile = Metanorma::Ladl::Profile.iso_iec
+engine = Metanorma::Ladl::Engine.new(profile: profile)
+engine.call(content_tree)
+----
+
+The default adapter supports the MN 112 reference `ContentElement` model, a
+LutaML-Model typed tree with explicit contexts and typed label output. It is not
+an adapter for Metanorma Document. A different model requires an explicit adapter
+with `validate`, `children`, `type`, `context`, `identifier` and `assign` methods.
+The call mutates labels and returns the same tree. It computes all labels before
+writing any and resets counters for every invocation. A completed call clears
+stale LADL labels from reference-tree nodes that no longer have a binding.
+
+Context instances are explicit associations on the content tree. For each node,
+the nearest associated context with a matching labeller supplies the counter
+scope. Explicit parent-labeller references resolve against content ancestors.
+An implicit `%parent` comes from the labeled context ancestor. Template
+conditions use the complete same-context element count; matching conditions win,
+then the first unconditional template, then the first template. Global labels
+are absent when no global template is declared.
+
+== Scope and known gaps
+
+The worked-profile golden test exercises every one of its 20 declared labellers.
+This is component semantics, not ISO legacy-output parity or completed MN 112
+conformance. Actual Metanorma Document labels, reference-profile migration and
+the all-flavor xref matrix remain separate integration work.
+
+Supported named sequences are decimal, Arabic-script decimal, lower/upper Latin
+bijective sequences, lower/upper Roman values from 1 to 3999, and finite
+lower/upper Greek characters. Custom numeric initial/increment values and
+explicit character sequences support defined repetition/prefix expansion.
+Unsupported numeral systems, unspecified cycle-length behavior and unknown
+syntax fail explicitly. This candidate does not invent a Cyrillic alphabet,
+East Asian numeral algorithms, Hebrew notation or suffix-expansion parameters.
+
+The profile's subfigure labeller is document-scoped, and its note labeller binds
+ClauseContext rather than AnnexClauseContext. The runtime follows those declared
+bindings; it does not silently rewrite them into an assumed full ISO profile.
+Those data-level parity questions require the reference-extraction/matrix work.
