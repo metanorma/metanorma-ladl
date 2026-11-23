@@ -23,6 +23,10 @@ module Metanorma
         def initialize(profile, adapter)
           @profile, @adapter = profile, adapter
           @nodes, @parents, @bindings, @labels = [], {}, {}, {}
+          # Invocation-local compound numbers ("1.1", "A.1"), keyed by Label.
+          # Label#value stays the element's own ordinal.
+          @qualified = {}
+          @labellers_by_name = profile.labellers.to_h { |entry| [entry.name, entry] }
         end
 
         def call(root)
@@ -31,7 +35,18 @@ module Metanorma
           groups = @bindings.group_by { |_id, binding| [binding.labeller.name, binding.scope.object_id] }
           positions = {}
           groups.each_value do |items|
-            items.each_with_index { |(id, _binding), index| positions[id] = [index + 1, items.length] }
+            binding = items.first.last
+            count = if @adapter.respond_to?(:template_element_count)
+                      @adapter.template_element_count(scope: binding.scope,
+                        type: binding.labeller.type, context: binding.labeller.context,
+                        nodes: @nodes, default: items.length)
+                    else
+                      items.length
+                    end
+            unless count.is_a?(Integer) && count >= items.length && count <= @nodes.length
+              raise TreeError, "Adapter template element count must be an Integer between the numbered group size and tree size"
+            end
+            items.each_with_index { |(id, _binding), index| positions[id] = [index + 1, count] }
           end
           @nodes.each do |node|
             binding = @bindings[node.object_id]
@@ -93,30 +108,58 @@ module Metanorma
         def calculate(node, binding, position, count)
           labeller = binding.labeller
           parent = parent_label(node, binding)
+          if labeller.parent && parent&.labeller == labeller.id && !@qualified.key?(parent.object_id)
+            raise UnsupportedFeature, "#{labeller.name}: nested use needs a compound %pn<separator>%n template"
+          end
           value = labeller.sequence.value(position)
           local_template = select_template(labeller.templates, count)
           local = interpolate(local_template.pattern, value: value, parent: parent, self_value: nil)
           global_template = select_template(labeller.global_templates, count)
           global = global_template && interpolate(global_template.pattern, value: value, parent: parent, self_value: local)
-          Label.new(local: local, global: global, value: value,
-                    direction: local_template.direction || labeller.sequence.direction,
-                    global_direction: global_template && (global_template.direction || labeller.sequence.direction),
-                    labeller: labeller.id)
+          label = Label.new(local: local, global: global, value: value,
+                            direction: local_template.direction || labeller.sequence.direction,
+                            global_direction: global_template && (global_template.direction || labeller.sequence.direction),
+                            labeller: labeller.id)
+          compound = qualified_number(local_template, value, parent)
+          @qualified[label.object_id] = compound if compound
+          label
         end
 
+        # The nearest qualifying ancestor supplies the parent: the declared
+        # labeller, the same labeller (recursive hierarchy), or a same-type
+        # variant that is this element's own counter scope (an annex figure
+        # for its subfigures). No other labeller satisfies a declared parent.
         def parent_label(node, binding)
           expected = binding.labeller.parent
           current = expected ? @parents[node.object_id] : binding.scope
           while current
-            parent_binding = @bindings[current.object_id]
             label = @labels[current.object_id]
-            return label if label && (!expected || parent_binding.labeller.name == expected)
+            return label if label && (!expected || parent_match?(current, binding))
             current = @parents[current.object_id]
           end
           if expected
             raise MissingParent, "#{binding.labeller.name}: no ancestor labeled by #{expected}"
           end
           nil
+        end
+
+        def parent_match?(candidate, binding)
+          found = @bindings.fetch(candidate.object_id).labeller
+          expected = binding.labeller.parent
+          return true if found.name == expected || found.name == binding.labeller.name
+
+          candidate.equal?(binding.scope) && found.type == @labellers_by_name.fetch(expected).type
+        end
+
+        def qualified_number(template, value, parent)
+          separator = template.pattern[/%pn([.\-:\/])%n/, 1]
+          return unless separator && parent
+
+          "#{parent_number(parent)}#{separator}#{value}"
+        end
+
+        def parent_number(parent)
+          @qualified.fetch(parent.object_id, parent.value)
         end
 
         def select_template(templates, count)
@@ -140,7 +183,7 @@ module Metanorma
             when "n" then value
             when "pn"
               raise MissingParent, "%pn needs a parent labeller value" unless parent
-              parent.value
+              parent_number(parent)
             when "parent"
               raise MissingParent, "%parent needs a labeled context ancestor" unless parent
               parent.global || parent.local

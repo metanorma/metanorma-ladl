@@ -1,17 +1,14 @@
 = ISO/IEC LADL candidate profile
 
-This package contains a traceable realization of the MN 112 worked ISO/IEC
-profile, sourced from `metanorma/docs` commit
-`97f6e8bc42b571c8b80c348c0a33027bde89f0eb`,
-`sources/112/iso_iec_label_style.lml`.
+This package implements the MN 112 worked ISO/IEC label profile.
 
 `iso-iec.lml` and `iso-iec.yaml` normalize to identical typed instance data.
 All 66 declarations are retained: one LabelStyle, six LabelContexts,
 39 LabelTemplates and 20 Labellers. Four referenced built-in sequences are
-resolved explicitly. `source-corrections.json` records every source-line change.
+resolved explicitly.
 The untouched upstream file is a regression fixture outside the package runtime.
 
-== Explicit source corrections
+== Supported syntax
 
 * Draft `instance Name < Type` headers are realized using supported canonical
   `Type "Name"` LML syntax.
@@ -65,7 +62,29 @@ Unsupported numeral systems, unspecified cycle-length behavior and unknown
 syntax fail explicitly. This candidate does not invent a Cyrillic alphabet,
 East Asian numeral algorithms, Hebrew notation or suffix-expansion parameters.
 
-The profile's subfigure labeller is document-scoped, and its note labeller binds
-ClauseContext rather than AnnexClauseContext. The runtime follows those declared
-bindings; it does not silently rewrite them into an assumed full ISO profile.
-Those data-level parity questions require the reference-extraction/matrix work.
+== Native hierarchy
+
+The 66 profile declarations are unchanged. The runtime and `DocumentAdapter`
+apply these rules to them:
+
+* A labeller nested under itself continues its own compound number, so clauses
+  render `1.1.1.1` and annex clauses render `A.1.1.1`. This requires a
+  `%pn<separator>%n` template. Any other nested use raises `UnsupportedFeature`.
+* `Label#value` remains the element's own ordinal.
+* Each native figure scopes its subfigures. An annex figure satisfies the
+  declared `FigureLabeller` parent only as that subfigure's counter scope,
+  which produces `Figure A.1 a)`.
+* Each native figure or table scopes its own notes.
+* Figures, tables, formulas and lists in nested annex clauses count across the
+  whole annex.
+* A hidden node consumes no ordinal and receives no generated label. Its
+  descendants remain eligible for their own labels. Hidden notes still count
+  toward the context's conditional note template selection.
+  Previously generated labels on hidden nodes are removed; authored labels stay.
+* A numbered descendant that requires an unavailable hidden-parent number raises
+  `MissingParent` before any labels change. Blank-prefix legacy labels such as
+  `.1` are an explicit compatibility gap, not silently synthesized.
+
+MN 112 has no figure context in the worked profile, so the adapter uses the
+figure as the owner of the subfigure labeller's declared context. A dedicated
+`FigureContext` would be a profile contract change.

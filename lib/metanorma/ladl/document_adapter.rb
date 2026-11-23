@@ -65,7 +65,7 @@ module Metanorma
       end
 
       def type(node)
-        return nil if value(node, :unnumbered) == true
+        return nil if flag?(node, :unnumbered) || hidden?(node)
         return "document" if root?(node)
         if node.is_a?(Sections::AnnexSection)
           return ancestors(node).any? { |p| p.is_a?(Sections::AnnexSection) } ? "clause" : "annex"
@@ -98,13 +98,34 @@ module Metanorma
       # A context belongs to an actual ancestor, never to a fabricated wrapper.
       # Siblings consequently share a counter; descendants restart at their own
       # containing clause/list/annex. An owner does not consume its own context.
+      #
+      # The worked profile has no figure/table context and declares six contexts,
+      # so native owners act as instances of the declared context: a figure
+      # scopes its subfigures, a figure/table scopes its notes, and a nested
+      # annex clause scopes its child clauses. Figures, tables, formulas and
+      # lists in nested annex clauses still count across the whole annex.
       def contexts_for(owner, target)
         return [] if owner.equal?(target)
         return ["DocumentContext"] if root?(owner)
+        return asset_contexts(owner, target) if asset?(owner)
+        return ["ListContext"] if owner.is_a?(Lists::List)
+        return nested_annex_contexts(target) if nested_annex_section?(owner)
         return ["AnnexClauseContext", "AnnexContext", "ClauseContext"] if owner.is_a?(Sections::AnnexSection)
         return ["ClauseContext"] if owner.is_a?(Sections::ClauseSection)
-        return ["ListContext"] if owner.is_a?(Lists::List)
         []
+      end
+
+      # Legacy note template selection uses all notes in the owning context,
+      # including hidden notes, while only numbered notes consume an ordinal.
+      def template_element_count(scope:, type:, context:, nodes:, default:)
+        return default unless type == "note"
+
+        nodes.count do |node|
+          next false unless node.is_a?(Blocks::NoteBlock) || standoc_note?(node)
+
+          owner = ancestors(node).find { |parent| contexts_for(parent, node).include?(context) }
+          owner.equal?(scope)
+        end
       end
 
       def validate(node)
@@ -123,7 +144,7 @@ module Metanorma
       end
 
       def assign(node, label)
-        return unless label
+        return clear_generated(node) unless label
 
         data = Inline::FmtLadlLabelData.new(**%i[local global value direction global_direction labeller]
           .to_h { |key| [key, label.public_send(key)] })
@@ -157,6 +178,71 @@ module Metanorma
       end
 
       private
+
+      # Removes only values this adapter generated, so a node that became
+      # hidden or unnumbered keeps its authored labels and loses stale ones.
+      def clear_generated(node)
+        data = label_data(node)
+        return unless data
+
+        if typed_xref?(node)
+          node.fmt_xref_label = Array(value(node, :fmt_xref_label)).reject { |item| item.container == GENERATED_CONTAINER }
+        else
+          node.fmt_ladl_label_data = nil
+          if node.class.attributes.key?(:fmt_xref_label) && node.fmt_xref_label == (data.global || data.local)
+            node.fmt_xref_label = nil
+          end
+        end
+        node.autonum = nil if node.class.attributes.key?(:autonum) && node.autonum == data.value
+        node.label = nil if node.is_a?(Lists::ListItem) && node.label == data.local
+      end
+
+      def asset?(node)
+        node.is_a?(Ancillary::FigureBlock) || node.is_a?(Ancillary::Subfigure) ||
+          node.is_a?(Metanorma::Document::Components::Tables::TableBlock)
+      end
+
+      def asset_contexts(owner, target)
+        return [] unless target
+
+        case context_type(target)
+        when "subfigure" then owner.is_a?(Metanorma::Document::Components::Tables::TableBlock) ? [] : ["DocumentContext"]
+        when "note" then ["ClauseContext"]
+        else []
+        end
+      end
+
+      def section?(node)
+        node.is_a?(Sections::AnnexSection) || node.is_a?(Sections::ClauseSection)
+      end
+
+      def nested_annex_section?(node)
+        section?(node) && ancestors(node).any? { |p| p.is_a?(Sections::AnnexSection) }
+      end
+
+      def nested_annex_contexts(target)
+        return ["ClauseContext"] unless target
+        return ["AnnexContext"] if section?(target)
+
+        %w[note example].include?(context_type(target)) ? ["ClauseContext"] : []
+      end
+
+      def context_type(node)
+        return "note" if node.is_a?(Blocks::NoteBlock) || standoc_note?(node)
+        return "subfigure" if node.is_a?(Ancillary::Subfigure)
+        return "example" if node.is_a?(Ancillary::ExampleBlock)
+
+        type(node)
+      end
+
+      def hidden?(node)
+        flag?(node, :hidden)
+      end
+
+      def flag?(node, key)
+        flag = value(node, key)
+        flag == true || flag.to_s.casecmp?("true")
+      end
 
       def root?(node)
         node.is_a?(Metanorma::Document::Root) ||
