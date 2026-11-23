@@ -68,16 +68,23 @@ module Metanorma
           @nodes.each do |node|
             current = node
             while current
-              context_name = @adapter.context(current)
-              if context_name
+              contexts = if @adapter.respond_to?(:contexts_for)
+                           @adapter.contexts_for(current, node)
+                         else
+                           [@adapter.context(current)].compact
+                         end
+              raise TreeError, "Adapter contexts must be an Array" unless contexts.is_a?(Array)
+              contexts.each do |context_name|
                 context = @profile.context(context_name)
                 raise TreeError, "Unknown content context #{context_name}" unless context
                 labeller = @profile.labellers.find { |l| l.context == context.name && l.type == @adapter.type(node) }
-                if labeller
-                  @bindings[node.object_id] = Binding.new(labeller, current)
-                  break
-                end
+                next unless labeller
+
+                @bindings[node.object_id] = Binding.new(labeller, current)
+                break
               end
+              break if @bindings.key?(node.object_id)
+
               current = @parents[current.object_id]
             end
           end
