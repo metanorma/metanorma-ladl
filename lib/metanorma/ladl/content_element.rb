@@ -37,7 +37,9 @@ module Metanorma
 
       def validate(node)
         return if node.is_a?(ContentElement)
-        raise TreeError, "#{node.class} is not supported by ContentElementAdapter; supply an explicit model adapter"
+
+        raise TreeError,
+              "#{node.class} is not supported by ContentElementAdapter; supply an explicit model adapter"
       end
     end
   end

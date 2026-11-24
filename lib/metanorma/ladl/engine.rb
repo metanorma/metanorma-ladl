@@ -4,16 +4,25 @@ module Metanorma
   module Ladl
     class Engine
       def initialize(profile:)
-        raise ProfileError, "Engine needs a validated Profile" unless profile.is_a?(Profile)
+        unless profile.is_a?(Profile)
+          raise ProfileError,
+                "Engine needs a validated Profile"
+        end
+
         @profile = profile
       end
 
       # All runtime counters/bindings are invocation-local. No labels are written
       # until every label has been calculated successfully.
-      def call(presentation_model, adapter: ContentElementAdapter.new, **_options)
+      def call(presentation_model, adapter: ContentElementAdapter.new,
+**_options)
         required = %i[children type context identifier assign validate]
         missing = required.reject { |method| adapter.respond_to?(method) }
-        raise TreeError, "Model adapter lacks #{missing.join(', ')}" unless missing.empty?
+        unless missing.empty?
+          raise TreeError,
+                "Model adapter lacks #{missing.join(', ')}"
+        end
+
         Run.new(@profile, adapter).call(presentation_model)
       end
 
@@ -21,36 +30,49 @@ module Metanorma
         Binding = Data.define(:labeller, :scope)
 
         def initialize(profile, adapter)
-          @profile, @adapter = profile, adapter
-          @nodes, @parents, @bindings, @labels = [], {}, {}, {}
+          @profile = profile
+          @adapter = adapter
+          @nodes = []
+          @parents = {}
+          @bindings = {}
+          @labels = {}
           # Invocation-local compound numbers ("1.1", "A.1"), keyed by Label.
           # Label#value stays the element's own ordinal.
           @qualified = {}
-          @labellers_by_name = profile.labellers.to_h { |entry| [entry.name, entry] }
+          @labellers_by_name = profile.labellers.to_h do |entry|
+            [entry.name, entry]
+          end
         end
 
         def call(root)
           collect(root)
           identify_bindings
-          groups = @bindings.group_by { |_id, binding| [binding.labeller.name, binding.scope.object_id] }
+          groups = @bindings.group_by do |_id, binding|
+            [binding.labeller.name, binding.scope.object_id]
+          end
           positions = {}
           groups.each_value do |items|
             binding = items.first.last
             count = if @adapter.respond_to?(:template_element_count)
                       @adapter.template_element_count(scope: binding.scope,
-                        type: binding.labeller.type, context: binding.labeller.context,
-                        nodes: @nodes, default: items.length)
+                                                      type: binding.labeller.type, context: binding.labeller.context,
+                                                      nodes: @nodes, default: items.length)
                     else
                       items.length
                     end
             unless count.is_a?(Integer) && count >= items.length && count <= @nodes.length
-              raise TreeError, "Adapter template element count must be an Integer between the numbered group size and tree size"
+              raise TreeError,
+                    "Adapter template element count must be an Integer between the numbered group size and tree size"
             end
-            items.each_with_index { |(id, _binding), index| positions[id] = [index + 1, count] }
+
+            items.each_with_index do |(id, _binding), index|
+              positions[id] = [index + 1, count]
+            end
           end
           @nodes.each do |node|
             binding = @bindings[node.object_id]
             next unless binding
+
             position, count = positions.fetch(node.object_id)
             @labels[node.object_id] = calculate(node, binding, position, count)
           end
@@ -61,18 +83,28 @@ module Metanorma
         private
 
         def collect(root)
-          ids, seen = {}, {}
+          ids = {}
+          seen = {}
           pending = [[root, nil]]
           until pending.empty?
             node, parent = pending.pop
             @adapter.validate(node)
-            raise TreeError, "Content must be a tree; repeated or cyclic node" if seen[node.object_id]
+            if seen[node.object_id]
+              raise TreeError,
+                    "Content must be a tree; repeated or cyclic node"
+            end
+
             seen[node.object_id] = true
             id = @adapter.identifier(node)
             raise TreeError, "Duplicate content id #{id}" if id && ids.key?(id)
+
             ids[id] = node if id
             children = @adapter.children(node)
-            raise TreeError, "Adapter children must be an Array" unless children.is_a?(Array)
+            unless children.is_a?(Array)
+              raise TreeError,
+                    "Adapter children must be an Array"
+            end
+
             @nodes << node
             @parents[node.object_id] = parent
             children.reverse_each { |child| pending << [child, node] }
@@ -88,11 +120,21 @@ module Metanorma
                          else
                            [@adapter.context(current)].compact
                          end
-              raise TreeError, "Adapter contexts must be an Array" unless contexts.is_a?(Array)
+              unless contexts.is_a?(Array)
+                raise TreeError,
+                      "Adapter contexts must be an Array"
+              end
+
               contexts.each do |context_name|
                 context = @profile.context(context_name)
-                raise TreeError, "Unknown content context #{context_name}" unless context
-                labeller = @profile.labellers.find { |l| l.context == context.name && l.type == @adapter.type(node) }
+                unless context
+                  raise TreeError,
+                        "Unknown content context #{context_name}"
+                end
+
+                labeller = @profile.labellers.find do |l|
+                  l.context == context.name && l.type == @adapter.type(node)
+                end
                 next unless labeller
 
                 @bindings[node.object_id] = Binding.new(labeller, current)
@@ -109,19 +151,27 @@ module Metanorma
           labeller = binding.labeller
           parent = parent_label(node, binding)
           if labeller.parent && parent&.labeller == labeller.id && !@qualified.key?(parent.object_id)
-            raise UnsupportedFeature, "#{labeller.name}: nested use needs a compound %pn<separator>%n template"
+            raise UnsupportedFeature,
+                  "#{labeller.name}: nested use needs a compound %pn<separator>%n template"
           end
+
           sequence = if @adapter.respond_to?(:sequence_for)
                        @adapter.sequence_for(node, default: labeller.sequence)
                      else
                        labeller.sequence
                      end
-          raise TreeError, "Adapter sequence must be a Sequence" unless sequence.is_a?(Sequence)
+          unless sequence.is_a?(Sequence)
+            raise TreeError,
+                  "Adapter sequence must be a Sequence"
+          end
+
           value = sequence.value(position)
           local_template = select_template(labeller.templates, count)
-          local = interpolate(local_template.pattern, value: value, parent: parent, self_value: nil)
+          local = interpolate(local_template.pattern, value: value,
+                                                      parent: parent, self_value: nil)
           global_template = select_template(labeller.global_templates, count)
-          global = global_template && interpolate(global_template.pattern, value: value, parent: parent, self_value: local)
+          global = global_template && interpolate(global_template.pattern,
+                                                  value: value, parent: parent, self_value: local)
           label = Label.new(local: local, global: global, value: value,
                             direction: local_template.direction || sequence.direction,
                             global_direction: global_template && (global_template.direction || sequence.direction),
@@ -140,12 +190,16 @@ module Metanorma
           current = expected ? @parents[node.object_id] : binding.scope
           while current
             label = @labels[current.object_id]
-            return label if label && (!expected || parent_match?(current, binding))
+            return label if label && (!expected || parent_match?(current,
+                                                                 binding))
+
             current = @parents[current.object_id]
           end
           if expected
-            raise MissingParent, "#{binding.labeller.name}: no ancestor labeled by #{expected}"
+            raise MissingParent,
+                  "#{binding.labeller.name}: no ancestor labeled by #{expected}"
           end
+
           nil
         end
 
@@ -170,7 +224,10 @@ module Metanorma
 
         def select_template(templates, count)
           return nil if templates.empty?
-          templates.find { |template| template.condition && matches?(template.condition, count) } ||
+
+          templates.find do |template|
+            template.condition && matches?(template.condition, count)
+          end ||
             templates.find { |template| !template.condition } || templates.first
         end
 
@@ -188,13 +245,25 @@ module Metanorma
             case Regexp.last_match(1)
             when "n" then value
             when "pn"
-              raise MissingParent, "%pn needs a parent labeller value" unless parent
+              unless parent
+                raise MissingParent,
+                      "%pn needs a parent labeller value"
+              end
+
               parent_number(parent)
             when "parent"
-              raise MissingParent, "%parent needs a labeled context ancestor" unless parent
+              unless parent
+                raise MissingParent,
+                      "%parent needs a labeled context ancestor"
+              end
+
               parent.global || parent.local
             when "self"
-              raise ProfileError, "%self cannot occur in a local template" unless self_value
+              unless self_value
+                raise ProfileError,
+                      "%self cannot occur in a local template"
+              end
+
               self_value
             end
           end

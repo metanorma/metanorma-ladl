@@ -6,6 +6,9 @@ gem "rspec", "~> 3.13"
 
 # Development lint gate.
 gem "rubocop", "~> 1.92", require: false
+gem "rubocop-rspec", require: false
+gem "rubocop-performance", require: false
+gem "rubocop-rake", require: false
 
 # Native integration is opt-in until the presentation metadata SDK is released.
 # LADL_NATIVE=1 bundle install enables the pinned SDK and flavor fixtures.

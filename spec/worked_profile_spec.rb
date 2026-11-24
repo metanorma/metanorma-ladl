@@ -9,11 +9,16 @@ RSpec.describe "MN112 corrected ISO/IEC worked profile" do
       nodes[id] = element(id, type, context, *children)
     end
     l4 = make.call("level4", "list_item_ordered_level4")
-    l3 = make.call("level3", "list_item_ordered_level3", nil, element("scope4", "container", "ListContext", l4))
-    l2 = make.call("level2", "list_item_ordered_level2", nil, element("scope3", "container", "ListContext", l3))
-    l1 = make.call("level1", "list_item_ordered_level1", nil, element("scope2", "container", "ListContext", l2))
-    list = make.call("list", "list", "ListContext", l1, make.call("unordered", "list_item_unordered"))
-    figure = make.call("figure", "figure", nil, make.call("subfigure", "subfigure"))
+    l3 = make.call("level3", "list_item_ordered_level3", nil,
+                   element("scope4", "container", "ListContext", l4))
+    l2 = make.call("level2", "list_item_ordered_level2", nil,
+                   element("scope3", "container", "ListContext", l3))
+    l1 = make.call("level1", "list_item_ordered_level1", nil,
+                   element("scope2", "container", "ListContext", l2))
+    list = make.call("list", "list", "ListContext", l1,
+                     make.call("unordered", "list_item_unordered"))
+    figure = make.call("figure", "figure", nil,
+                       make.call("subfigure", "subfigure"))
     clause = make.call("clause", "clause", "ClauseContext",
                        make.call("subclause", "subclause", "SubclauseContext"), figure,
                        make.call("table", "table"), make.call("note", "note"),
@@ -30,10 +35,12 @@ RSpec.describe "MN112 corrected ISO/IEC worked profile" do
       "subfigure" => "Figure 1 a)", "table" => "Table 1", "annex_table" => "Table A.1",
       "note" => "NOTE", "example" => "EXAMPLE", "formula" => "(1)",
       "annex_formula" => "(A.1)", "list" => "List 1", "annex_list" => "List A.1",
-      "unordered" => "—", "level1" => "a)", "level2" => "1)", "level3" => "i)", "level4" => "a)",
+      "unordered" => "—", "level1" => "a)", "level2" => "1)", "level3" => "i)", "level4" => "a)"
     }
     expect(nodes.transform_values { |node| node.label.local }).to eq(expected)
-    expect(nodes.values.map { |node| node.label.labeller }.sort).to eq(iso_profile.labellers.map(&:id).sort)
+    expect(nodes.values.map do |node|
+      node.label.labeller
+    end.sort).to eq(iso_profile.labellers.map(&:id).sort)
     expect(nodes.fetch("note").label.global).to eq("Clause 1, NOTE")
     expect(nodes.fetch("example").label.global).to eq("Clause 1, EXAMPLE")
   end

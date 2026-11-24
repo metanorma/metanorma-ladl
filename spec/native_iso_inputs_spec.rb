@@ -18,14 +18,16 @@ RSpec.describe "native ISO note and authored-list inputs against the real legacy
   end
 
   def legacy(body)
-    converter = IsoDoc::Iso::PresentationXMLConvert.new(presxml_options: {}, language: "en", script: "Latn")
+    converter = IsoDoc::Iso::PresentationXMLConvert.new(presxml_options: {},
+                                                        language: "en", script: "Latn")
     output = converter.convert("native-input-parity",
-      %(<iso-standard xmlns="http://riboseinc.com/isoxml">#{bibdata}<sections>#{body}</sections></iso-standard>), true)
+                               %(<iso-standard xmlns="http://riboseinc.com/isoxml">#{bibdata}<sections>#{body}</sections></iso-standard>), true)
     [Nokogiri::XML(output), converter.xrefs.get]
   end
 
   def nodes(root)
-    found, pending = {}, [root]
+    found = {}
+    pending = [root]
     until pending.empty?
       node = pending.shift
       found[adapter.identifier(node)] = node if adapter.identifier(node)
@@ -40,10 +42,13 @@ RSpec.describe "native ISO note and authored-list inputs against the real legacy
   def legacy_local(document, id, note: false)
     node = document.at_xpath("//*[@id='#{id}']/*[local-name()='fmt-name']")
     return nil unless node
+
     node = node.at_xpath(".//*[local-name()='span'][@class='fmt-caption-label']") if note
     return nil unless node
 
-    node.xpath(".//text()").reject { |text| text.text.match?(/\A[[:space:]]*\n[[:space:]]*\z/) }.map(&:text).join.strip
+    node.xpath(".//text()").reject do |text|
+      text.text.match?(/\A[[:space:]]*\n[[:space:]]*\z/)
+    end.map(&:text).join.strip
   end
 
   def compare_notes(root_class, body, ids)
@@ -51,14 +56,16 @@ RSpec.describe "native ISO note and authored-list inputs against the real legacy
     root = native(root_class, body)
     engine.call(root, adapter: adapter)
     found = nodes(root)
-    actual = ids.to_h { |id| [id, adapter.label_for(found.fetch(id), form: :local)] }
+    actual = ids.to_h do |id|
+      [id, adapter.label_for(found.fetch(id), form: :local)]
+    end
     expected = ids.to_h { |id| [id, legacy_local(output, id, note: true)] }
     expect(actual).to eq(expected)
     root
   end
 
-
-  [Metanorma::Standoc::Document::Root, Metanorma::Iso::Document::Root].each do |root_class|
+  [Metanorma::Standoc::Document::Root,
+   Metanorma::Iso::Document::Root].each do |root_class|
     context root_class.name do
       it "excludes native units and requirement note types from ordinals and single-note selection" do
         body = '<clause id="c"><title>Scope</title><note id="u" type="units"><p>Units</p></note><note id="r" type="requirement"><p>Requirement</p></note><note id="n"><p>Normal</p></note></clause>'
@@ -87,7 +94,9 @@ RSpec.describe "native ISO note and authored-list inputs against the real legacy
           expect(adapter.label_for(found.fetch(id), form: :local)).to eq(Nokogiri::XML.fragment(anchors.fetch(id).fetch(:xref)).text)
         end
         %w[i1 i2 i3 i4].each do |id|
-          expect(adapter.label_for(found.fetch(id), form: :local)).to eq(legacy_local(output, id))
+          expect(adapter.label_for(found.fetch(id),
+                                   form: :local)).to eq(legacy_local(output,
+                                                                     id))
         end
       end
 
@@ -99,7 +108,9 @@ RSpec.describe "native ISO note and authored-list inputs against the real legacy
           2.times { engine.call(root, adapter: adapter) }
           found = nodes(root)
           %w[i1 i2 i3].each do |id|
-            expect(adapter.label_for(found.fetch(id), form: :local)).to eq(legacy_local(output, id))
+            expect(adapter.label_for(found.fetch(id),
+                                     form: :local)).to eq(legacy_local(output,
+                                                                       id))
           end
         end
       end
@@ -111,17 +122,23 @@ RSpec.describe "native ISO note and authored-list inputs against the real legacy
         engine.call(root, adapter: adapter)
         found = nodes(root)
         expected = %w[i1 i2 i3 i4].to_h { |id| [id, legacy_local(output, id)] }
-        expect(expected.keys.to_h { |id| [id, adapter.label_for(found.fetch(id), form: :local)] }).to eq(expected)
+        expect(expected.keys.to_h do |id|
+          [id, adapter.label_for(found.fetch(id), form: :local)]
+        end).to eq(expected)
         reparsed = root.class.from_xml(root.to_xml)
         again = nodes(reparsed)
-        expect(expected.keys.to_h { |id| [id, adapter.label_for(again.fetch(id), form: :local)] }).to eq(expected)
+        expect(expected.keys.to_h do |id|
+          [id, adapter.label_for(again.fetch(id), form: :local)]
+        end).to eq(expected)
         expect(again.fetch("o4").type).to eq(found.fetch("o4").type)
         expect(again.fetch("o4").start).to eq(found.fetch("o4").start)
       end
 
       it "uses declared native defaults through ten levels and the legacy deep fallback" do
-        body = '<p>Body</p>'
-        11.downto(1) { |depth| body = %(<ol id="o#{depth}"><li id="i#{depth}">#{body}</li></ol>) }
+        body = "<p>Body</p>"
+        11.downto(1) do |depth|
+          body = %(<ol id="o#{depth}"><li id="i#{depth}">#{body}</li></ol>)
+        end
         body = %(<clause id="c"><title>Scope</title>#{body}</clause>)
         output, = legacy(body)
         root = native(root_class, body)
@@ -129,7 +146,9 @@ RSpec.describe "native ISO note and authored-list inputs against the real legacy
         found = nodes(root)
         (1..11).each do |depth|
           id = "i#{depth}"
-          expect(adapter.label_for(found.fetch(id), form: :local)).to eq(legacy_local(output, id))
+          expect(adapter.label_for(found.fetch(id),
+                                   form: :local)).to eq(legacy_local(output,
+                                                                     id))
         end
       end
 
@@ -139,17 +158,34 @@ RSpec.describe "native ISO note and authored-list inputs against the real legacy
         expect(legacy_local(output, "i")).not_to be_empty
         root = native(root_class, body)
         expect { engine.call(root, adapter: adapter) }
-          .to raise_error(Metanorma::Ladl::UnsupportedFeature, /character sequence exhausted/)
-        expect(nodes(root).values.map { |node| adapter.label_data(node) }.compact).to be_empty
+          .to raise_error(Metanorma::Ladl::UnsupportedFeature,
+                          /character sequence exhausted/)
+        expect(nodes(root).values.map do |node|
+          adapter.label_data(node)
+        end.compact).to be_empty
       end
 
       it "fails atomically for unsupported authored list types and malformed starts" do
-        root = native(root_class, '<clause id="c"><title>Scope</title><ol id="ol" type="unknown"><li id="i"><p>Text</p></li></ol></clause>')
-        expect { engine.call(root, adapter: adapter) }.to raise_error(Metanorma::Ladl::UnsupportedFeature, /ordered-list type/)
-        expect(nodes(root).values.map { |node| adapter.label_data(node) }.compact).to be_empty
-        root = native(root_class, '<clause id="c"><title>Scope</title><ol id="ol" start="invalid"><li id="i"><p>Text</p></li></ol></clause>')
-        expect { engine.call(root, adapter: adapter) }.to raise_error(Metanorma::Ladl::TreeError, /start must be an integer/)
-        expect(nodes(root).values.map { |node| adapter.label_data(node) }.compact).to be_empty
+        root = native(root_class,
+                      '<clause id="c"><title>Scope</title><ol id="ol" type="unknown"><li id="i"><p>Text</p></li></ol></clause>')
+        expect do
+          engine.call(root,
+                      adapter: adapter)
+        end.to raise_error(Metanorma::Ladl::UnsupportedFeature,
+                           /ordered-list type/)
+        expect(nodes(root).values.map do |node|
+          adapter.label_data(node)
+        end.compact).to be_empty
+        root = native(root_class,
+                      '<clause id="c"><title>Scope</title><ol id="ol" start="invalid"><li id="i"><p>Text</p></li></ol></clause>')
+        expect do
+          engine.call(root,
+                      adapter: adapter)
+        end.to raise_error(Metanorma::Ladl::TreeError,
+                           /start must be an integer/)
+        expect(nodes(root).values.map do |node|
+          adapter.label_data(node)
+        end.compact).to be_empty
       end
     end
   end
