@@ -111,14 +111,20 @@ module Metanorma
           if labeller.parent && parent&.labeller == labeller.id && !@qualified.key?(parent.object_id)
             raise UnsupportedFeature, "#{labeller.name}: nested use needs a compound %pn<separator>%n template"
           end
-          value = labeller.sequence.value(position)
+          sequence = if @adapter.respond_to?(:sequence_for)
+                       @adapter.sequence_for(node, default: labeller.sequence)
+                     else
+                       labeller.sequence
+                     end
+          raise TreeError, "Adapter sequence must be a Sequence" unless sequence.is_a?(Sequence)
+          value = sequence.value(position)
           local_template = select_template(labeller.templates, count)
           local = interpolate(local_template.pattern, value: value, parent: parent, self_value: nil)
           global_template = select_template(labeller.global_templates, count)
           global = global_template && interpolate(global_template.pattern, value: value, parent: parent, self_value: local)
           label = Label.new(local: local, global: global, value: value,
-                            direction: local_template.direction || labeller.sequence.direction,
-                            global_direction: global_template && (global_template.direction || labeller.sequence.direction),
+                            direction: local_template.direction || sequence.direction,
+                            global_direction: global_template && (global_template.direction || sequence.direction),
                             labeller: labeller.id)
           compound = qualified_number(local_template, value, parent)
           @qualified[label.object_id] = compound if compound

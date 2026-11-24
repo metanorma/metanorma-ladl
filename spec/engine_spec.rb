@@ -104,4 +104,15 @@ RSpec.describe Metanorma::Ladl::Engine do
     engine.call(element("d", "document", "DocumentContext", node))
     expect(node.label.local).to eq('literal #{raise "executed"} 1')
   end
+  it "rejects an invalid optional adapter sequence before assigning any label" do
+    adapter = Metanorma::Ladl::ContentElementAdapter.new
+    def adapter.sequence_for(_node, default:)
+      Object.new
+    end
+    clause = element("c", "clause")
+    root = element("d", "document", "DocumentContext", clause)
+    expect { engine.call(root, adapter: adapter) }.to raise_error(Metanorma::Ladl::TreeError, /must be a Sequence/)
+    expect(clause.label).to be_nil
+  end
+
 end

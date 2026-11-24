@@ -51,6 +51,15 @@ module Metanorma
         end
       end
 
+      # Sequence#set_initial_value from MN112, represented as an immutable
+      # invocation-local value so one authored list cannot change the next.
+      def with_initial_value(initial_value)
+        self.class.new(name, kind: @kind, base: @base,
+          initial_value: initial_value, increment: @increment,
+          characters: @characters, expansion_rule: @expansion_rule,
+          expansion_prefix: @prefixes, direction: direction)
+      end
+
       def value(position)
         raise ProfileError, "Sequence position must be a positive integer" unless position.is_a?(Integer) && position.positive?
         format(@initial_value + (position - 1) * @increment)

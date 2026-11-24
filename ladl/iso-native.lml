@@ -1,0 +1,620 @@
+LabelStyle "ISOIECNativeLabelStyle" {
+  name = "ISO/IEC Native Presentation Inputs"
+  definition = "Operative native list specialization; original worked-example declarations remain separately available."
+  labellers = ["id:clause_labeller", "id:subclause_labeller", "id:annex_labeller", "id:annex_clause_labeller", "id:figure_labeller", "id:annex_figure_labeller", "id:subfigure_labeller", "id:table_labeller", "id:annex_table_labeller", "id:note_labeller", "id:example_labeller", "id:formula_labeller", "id:annex_formula_labeller", "id:list_labeller", "id:annex_list_labeller", "id:unordered_list_item_labeller", "id:ordered_list_item_level1_labeller", "id:ordered_list_item_level2_labeller", "id:ordered_list_item_level3_labeller", "id:ordered_list_item_level4_labeller", "id:native_ordered_list_style_arabic", "id:native_ordered_list_style_alphabet", "id:native_ordered_list_style_alphabet_upper", "id:native_ordered_list_style_roman", "id:native_ordered_list_style_roman_upper", "id:native_ordered_list_level1", "id:native_ordered_list_level2", "id:native_ordered_list_level3", "id:native_ordered_list_level4", "id:native_ordered_list_level5", "id:native_ordered_list_level6", "id:native_ordered_list_level7", "id:native_ordered_list_level8", "id:native_ordered_list_level9", "id:native_ordered_list_level10", "id:native_ordered_list_deep"]
+  sequences = [ref:(DecimalNumericSequence), ref:(AlphaLowerNumericSequence), ref:(AlphaUpperNumericSequence), ref:(RomanLowerNumericSequence), ref:(RomanUpperNumericSequence), ref:(NativeLowerLetterSequence), ref:(NativeUpperLetterSequence)]
+  templates = [ref:(ClauseLabelTemplate), ref:(ClauseGlobalLabelTemplate), ref:(SubclauseLabelTemplate), ref:(SubclauseGlobalLabelTemplate), ref:(AnnexLabelTemplate), ref:(AnnexGlobalLabelTemplate), ref:(AnnexClauseLabelTemplate), ref:(AnnexClauseGlobalLabelTemplate), ref:(FigureLabelTemplate), ref:(FigureGlobalLabelTemplate), ref:(AnnexFigureLabelTemplate), ref:(AnnexFigureGlobalLabelTemplate), ref:(SubfigureLabelTemplate), ref:(SubfigureGlobalLabelTemplate), ref:(TableLabelTemplate), ref:(TableGlobalLabelTemplate), ref:(AnnexTableLabelTemplate), ref:(AnnexTableGlobalLabelTemplate), ref:(NoteSingleLabelTemplate), ref:(NoteMultipleLabelTemplate), ref:(NoteSingleGlobalLabelTemplate), ref:(NoteMultipleGlobalLabelTemplate), ref:(ExampleSingleLabelTemplate), ref:(ExampleMultipleLabelTemplate), ref:(ExampleSingleGlobalLabelTemplate), ref:(ExampleMultipleGlobalLabelTemplate), ref:(FormulaLabelTemplate), ref:(FormulaGlobalLabelTemplate), ref:(AnnexFormulaLabelTemplate), ref:(AnnexFormulaGlobalLabelTemplate), ref:(ListLabelTemplate), ref:(ListGlobalLabelTemplate), ref:(AnnexListLabelTemplate), ref:(AnnexListGlobalLabelTemplate), ref:(UnorderedListItemLabelTemplate), ref:(OrderedListItemLevel1LabelTemplate), ref:(OrderedListItemLevel2LabelTemplate), ref:(OrderedListItemLevel3LabelTemplate), ref:(OrderedListItemLevel4LabelTemplate), ref:(NativeUpperListTemplate), ref:(NativeSingleListTemplate), ref:(NativeMultipleListTemplate)]
+  contexts = [ref:(DocumentContext), ref:(ClauseContext), ref:(SubclauseContext), ref:(AnnexContext), ref:(AnnexClauseContext), ref:(ListContext)]
+}
+
+LabelContext "DocumentContext" {
+  name = "document"
+  definition = "Top-level document context for ISO/IEC documents"
+}
+
+LabelContext "ClauseContext" {
+  name = "clause"
+  parent = ref:(DocumentContext)
+  definition = "Context for clauses within the main document"
+}
+
+LabelContext "SubclauseContext" {
+  name = "subclause"
+  parent = ref:(ClauseContext)
+  definition = "Context for subclauses within clauses"
+}
+
+LabelTemplate "ClauseLabelTemplate" {
+  pattern = "Clause %n"
+  definition = "Template for local clause references"
+}
+
+LabelTemplate "ClauseGlobalLabelTemplate" {
+  pattern = "Clause %n"
+  definition = "Template for global clause references"
+}
+
+Labeller "ClauseLabeller" {
+  id = "clause_labeller"
+  sequence = ref:(DecimalNumericSequence)
+  context = ref:(DocumentContext)
+  type = "clause"
+  template = ref:(ClauseLabelTemplate)
+  global_template = ref:(ClauseGlobalLabelTemplate)
+  definition = "Labeller for clauses in the main document"
+}
+
+LabelTemplate "SubclauseLabelTemplate" {
+  pattern = "%pn.%n"
+  definition = "Template for local subclause references"
+}
+
+LabelTemplate "SubclauseGlobalLabelTemplate" {
+  pattern = "%pn.%n"
+  definition = "Template for global subclause references"
+}
+
+Labeller "SubclauseLabeller" {
+  id = "subclause_labeller"
+  sequence = ref:(DecimalNumericSequence)
+  context = ref:(ClauseContext)
+  parent = ref:(ClauseLabeller)
+  type = "subclause"
+  template = ref:(SubclauseLabelTemplate)
+  global_template = ref:(SubclauseGlobalLabelTemplate)
+  definition = "Labeller for subclauses within clauses"
+}
+
+LabelContext "AnnexContext" {
+  name = "annex"
+  parent = ref:(DocumentContext)
+  definition = "Context for annexes within the document"
+}
+
+LabelContext "AnnexClauseContext" {
+  name = "annex_clause"
+  parent = ref:(AnnexContext)
+  definition = "Context for clauses within annexes"
+}
+
+LabelTemplate "AnnexLabelTemplate" {
+  pattern = "Annex %n"
+  definition = "Template for local annex references"
+}
+
+LabelTemplate "AnnexGlobalLabelTemplate" {
+  pattern = "Annex %n"
+  definition = "Template for global annex references"
+}
+
+Labeller "AnnexLabeller" {
+  id = "annex_labeller"
+  sequence = ref:(AlphaUpperNumericSequence)
+  context = ref:(DocumentContext)
+  type = "annex"
+  template = ref:(AnnexLabelTemplate)
+  global_template = ref:(AnnexGlobalLabelTemplate)
+  definition = "Labeller for annexes in the document"
+}
+
+LabelTemplate "AnnexClauseLabelTemplate" {
+  pattern = "%pn.%n"
+  definition = "Template for local annex clause references"
+}
+
+LabelTemplate "AnnexClauseGlobalLabelTemplate" {
+  pattern = "%pn.%n"
+  definition = "Template for global annex clause references"
+}
+
+Labeller "AnnexClauseLabeller" {
+  id = "annex_clause_labeller"
+  sequence = ref:(DecimalNumericSequence)
+  context = ref:(AnnexContext)
+  parent = ref:(AnnexLabeller)
+  type = "clause"
+  template = ref:(AnnexClauseLabelTemplate)
+  global_template = ref:(AnnexClauseGlobalLabelTemplate)
+  definition = "Labeller for clauses within annexes"
+}
+
+LabelTemplate "FigureLabelTemplate" {
+  pattern = "Figure %n"
+  definition = "Template for local figure references in the main document"
+}
+
+LabelTemplate "FigureGlobalLabelTemplate" {
+  pattern = "Figure %n"
+  definition = "Template for global figure references in the main document"
+}
+
+Labeller "FigureLabeller" {
+  id = "figure_labeller"
+  sequence = ref:(DecimalNumericSequence)
+  context = ref:(DocumentContext)
+  type = "figure"
+  template = ref:(FigureLabelTemplate)
+  global_template = ref:(FigureGlobalLabelTemplate)
+  definition = "Labeller for figures in the main document"
+}
+
+LabelTemplate "AnnexFigureLabelTemplate" {
+  pattern = "Figure %pn.%n"
+  definition = "Template for local figure references in annexes"
+}
+
+LabelTemplate "AnnexFigureGlobalLabelTemplate" {
+  pattern = "Figure %pn.%n"
+  definition = "Template for global figure references in annexes"
+}
+
+Labeller "AnnexFigureLabeller" {
+  id = "annex_figure_labeller"
+  sequence = ref:(DecimalNumericSequence)
+  context = ref:(AnnexContext)
+  parent = ref:(AnnexLabeller)
+  type = "figure"
+  template = ref:(AnnexFigureLabelTemplate)
+  global_template = ref:(AnnexFigureGlobalLabelTemplate)
+  definition = "Labeller for figures in annexes"
+}
+
+LabelTemplate "SubfigureLabelTemplate" {
+  pattern = "Figure %pn %n)"
+  definition = "Template for local subfigure references"
+}
+
+LabelTemplate "SubfigureGlobalLabelTemplate" {
+  pattern = "Figure %pn %n)"
+  definition = "Template for global subfigure references"
+}
+
+Labeller "SubfigureLabeller" {
+  id = "subfigure_labeller"
+  sequence = ref:(AlphaLowerNumericSequence)
+  context = ref:(DocumentContext)
+  parent = ref:(FigureLabeller)
+  type = "subfigure"
+  template = ref:(SubfigureLabelTemplate)
+  global_template = ref:(SubfigureGlobalLabelTemplate)
+  definition = "Labeller for subfigures in the document"
+}
+
+LabelTemplate "TableLabelTemplate" {
+  pattern = "Table %n"
+  definition = "Template for local table references in the main document"
+}
+
+LabelTemplate "TableGlobalLabelTemplate" {
+  pattern = "Table %n"
+  definition = "Template for global table references in the main document"
+}
+
+Labeller "TableLabeller" {
+  id = "table_labeller"
+  sequence = ref:(DecimalNumericSequence)
+  context = ref:(DocumentContext)
+  type = "table"
+  template = ref:(TableLabelTemplate)
+  global_template = ref:(TableGlobalLabelTemplate)
+  definition = "Labeller for tables in the main document"
+}
+
+LabelTemplate "AnnexTableLabelTemplate" {
+  pattern = "Table %pn.%n"
+  definition = "Template for local table references in annexes"
+}
+
+LabelTemplate "AnnexTableGlobalLabelTemplate" {
+  pattern = "Table %pn.%n"
+  definition = "Template for global table references in annexes"
+}
+
+Labeller "AnnexTableLabeller" {
+  id = "annex_table_labeller"
+  sequence = ref:(DecimalNumericSequence)
+  context = ref:(AnnexContext)
+  parent = ref:(AnnexLabeller)
+  type = "table"
+  template = ref:(AnnexTableLabelTemplate)
+  global_template = ref:(AnnexTableGlobalLabelTemplate)
+  definition = "Labeller for tables in annexes"
+}
+
+LabelTemplate "NoteSingleLabelTemplate" {
+  pattern = "NOTE"
+  definition = "Template for single note references"
+}
+
+LabelTemplate "NoteMultipleLabelTemplate" {
+  pattern = "NOTE %n"
+  definition = "Template for multiple note references"
+  condition = { type = "element_count_gt" threshold = 1 }
+}
+
+LabelTemplate "NoteSingleGlobalLabelTemplate" {
+  pattern = "%parent, NOTE"
+  definition = "Template for global single note references"
+}
+
+LabelTemplate "NoteMultipleGlobalLabelTemplate" {
+  pattern = "%parent, NOTE %n"
+  definition = "Template for global multiple note references"
+  condition = { type = "element_count_gt" threshold = 1 }
+}
+
+Labeller "NoteLabeller" {
+  id = "note_labeller"
+  sequence = ref:(DecimalNumericSequence)
+  context = ref:(ClauseContext)
+  type = "note"
+  template = [ref:(NoteSingleLabelTemplate), ref:(NoteMultipleLabelTemplate)]
+  global_template = [ref:(NoteSingleGlobalLabelTemplate), ref:(NoteMultipleGlobalLabelTemplate)]
+  definition = "Labeller for notes in clauses with conditional templates based on note count"
+}
+
+LabelTemplate "ExampleSingleLabelTemplate" {
+  pattern = "EXAMPLE"
+  definition = "Template for single example references"
+}
+
+LabelTemplate "ExampleMultipleLabelTemplate" {
+  pattern = "EXAMPLE %n"
+  definition = "Template for multiple example references"
+  condition = { type = "element_count_gt" threshold = 1 }
+}
+
+LabelTemplate "ExampleSingleGlobalLabelTemplate" {
+  pattern = "%parent, EXAMPLE"
+  definition = "Template for global single example references"
+}
+
+LabelTemplate "ExampleMultipleGlobalLabelTemplate" {
+  pattern = "%parent, EXAMPLE %n"
+  definition = "Template for global multiple example references"
+  condition = { type = "element_count_gt" threshold = 1 }
+}
+
+Labeller "ExampleLabeller" {
+  id = "example_labeller"
+  sequence = ref:(DecimalNumericSequence)
+  context = ref:(ClauseContext)
+  type = "example"
+  template = [ref:(ExampleSingleLabelTemplate), ref:(ExampleMultipleLabelTemplate)]
+  global_template = [ref:(ExampleSingleGlobalLabelTemplate), ref:(ExampleMultipleGlobalLabelTemplate)]
+  definition = "Labeller for examples in clauses with conditional templates based on example count"
+}
+
+LabelTemplate "FormulaLabelTemplate" {
+  pattern = "(%n)"
+  definition = "Template for local formula references in the main document"
+}
+
+LabelTemplate "FormulaGlobalLabelTemplate" {
+  pattern = "Formula (%n)"
+  definition = "Template for global formula references in the main document"
+}
+
+Labeller "FormulaLabeller" {
+  id = "formula_labeller"
+  sequence = ref:(DecimalNumericSequence)
+  context = ref:(DocumentContext)
+  type = "formula"
+  template = ref:(FormulaLabelTemplate)
+  global_template = ref:(FormulaGlobalLabelTemplate)
+  definition = "Labeller for formulas in the main document"
+}
+
+LabelTemplate "AnnexFormulaLabelTemplate" {
+  pattern = "(%pn.%n)"
+  definition = "Template for local formula references in annexes"
+}
+
+LabelTemplate "AnnexFormulaGlobalLabelTemplate" {
+  pattern = "Formula (%pn.%n)"
+  definition = "Template for global formula references in annexes"
+}
+
+Labeller "AnnexFormulaLabeller" {
+  id = "annex_formula_labeller"
+  sequence = ref:(DecimalNumericSequence)
+  context = ref:(AnnexContext)
+  parent = ref:(AnnexLabeller)
+  type = "formula"
+  template = ref:(AnnexFormulaLabelTemplate)
+  global_template = ref:(AnnexFormulaGlobalLabelTemplate)
+  definition = "Labeller for formulas in annexes"
+}
+
+LabelContext "ListContext" {
+  name = "list"
+  parent = ref:(ClauseContext)
+  definition = "Context for lists within clauses"
+}
+
+LabelTemplate "ListLabelTemplate" {
+  pattern = "List %n"
+  definition = "Template for local list references in the main document"
+}
+
+LabelTemplate "ListGlobalLabelTemplate" {
+  pattern = "List %n"
+  definition = "Template for global list references in the main document"
+}
+
+Labeller "ListLabeller" {
+  id = "list_labeller"
+  sequence = ref:(DecimalNumericSequence)
+  context = ref:(ClauseContext)
+  type = "list"
+  template = [ref:(NativeSingleListTemplate), ref:(NativeMultipleListTemplate)]
+  global_template = [ref:(NativeSingleListTemplate), ref:(NativeMultipleListTemplate)]
+  definition = "Labeller for lists in the main document"
+}
+
+LabelTemplate "AnnexListLabelTemplate" {
+  pattern = "List %pn.%n"
+  definition = "Template for local list references in annexes"
+}
+
+LabelTemplate "AnnexListGlobalLabelTemplate" {
+  pattern = "List %pn.%n"
+  definition = "Template for global list references in annexes"
+}
+
+Labeller "AnnexListLabeller" {
+  id = "annex_list_labeller"
+  sequence = ref:(DecimalNumericSequence)
+  context = ref:(AnnexContext)
+  parent = ref:(AnnexLabeller)
+  type = "list"
+  template = ref:(AnnexListLabelTemplate)
+  global_template = ref:(AnnexListGlobalLabelTemplate)
+  definition = "Labeller for lists in annexes"
+}
+
+LabelTemplate "UnorderedListItemLabelTemplate" {
+  pattern = "—"
+  definition = "Template for unordered list items at all levels"
+}
+
+Labeller "UnorderedListItemLabeller" {
+  id = "unordered_list_item_labeller"
+  sequence = ref:(DecimalNumericSequence)
+  context = ref:(ListContext)
+  type = "list_item_unordered"
+  template = ref:(UnorderedListItemLabelTemplate)
+  definition = "Labeller for unordered list items"
+}
+
+LabelTemplate "OrderedListItemLevel1LabelTemplate" {
+  pattern = "%n)"
+  definition = "Template for first level ordered list items"
+}
+
+Labeller "OrderedListItemLevel1Labeller" {
+  id = "ordered_list_item_level1_labeller"
+  sequence = ref:(AlphaLowerNumericSequence)
+  context = ref:(ListContext)
+  type = "list_item_ordered_level1"
+  template = ref:(OrderedListItemLevel1LabelTemplate)
+  definition = "Labeller for first level ordered list items"
+}
+
+LabelTemplate "OrderedListItemLevel2LabelTemplate" {
+  pattern = "%n)"
+  definition = "Template for second level ordered list items"
+}
+
+Labeller "OrderedListItemLevel2Labeller" {
+  id = "ordered_list_item_level2_labeller"
+  sequence = ref:(DecimalNumericSequence)
+  context = ref:(ListContext)
+  parent = ref:(OrderedListItemLevel1Labeller)
+  type = "list_item_ordered_level2"
+  template = ref:(OrderedListItemLevel2LabelTemplate)
+  definition = "Labeller for second level ordered list items"
+}
+
+LabelTemplate "OrderedListItemLevel3LabelTemplate" {
+  pattern = "%n)"
+  definition = "Template for third level ordered list items"
+}
+
+Labeller "OrderedListItemLevel3Labeller" {
+  id = "ordered_list_item_level3_labeller"
+  sequence = ref:(RomanLowerNumericSequence)
+  context = ref:(ListContext)
+  parent = ref:(OrderedListItemLevel2Labeller)
+  type = "list_item_ordered_level3"
+  template = ref:(OrderedListItemLevel3LabelTemplate)
+  definition = "Labeller for third level ordered list items"
+}
+
+LabelTemplate "OrderedListItemLevel4LabelTemplate" {
+  pattern = "%n)"
+  definition = "Template for fourth level ordered list items"
+}
+
+Labeller "OrderedListItemLevel4Labeller" {
+  id = "ordered_list_item_level4_labeller"
+  sequence = ref:(AlphaLowerNumericSequence)
+  context = ref:(ListContext)
+  parent = ref:(OrderedListItemLevel3Labeller)
+  type = "list_item_ordered_level4"
+  template = ref:(OrderedListItemLevel4LabelTemplate)
+  definition = "Labeller for fourth level ordered list items"
+}
+
+LabelTemplate "NativeUpperListTemplate" {
+  pattern = "%n."
+  definition = "Uppercase native ordered-list caption delimiter measured from legacy ISO presentation."
+}
+
+LabelTemplate "NativeSingleListTemplate" {
+  pattern = "List"
+  definition = "A sole native ordered list has no ordinal in the legacy ISO reference."
+}
+
+LabelTemplate "NativeMultipleListTemplate" {
+  pattern = "List %n"
+  condition = { type = "element_count_gt" threshold = 1 }
+}
+
+CharacterSequence "NativeLowerLetterSequence" {
+  characters = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"]
+  expansion_rule = "none"
+  direction = "ltr"
+  definition = "Bounded native Latin list letters; legacy overflow remains unsupported rather than silently using bijective expansion."
+}
+
+CharacterSequence "NativeUpperLetterSequence" {
+  characters = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"]
+  expansion_rule = "none"
+  direction = "ltr"
+  definition = "Bounded native Latin list letters; legacy overflow remains unsupported rather than silently using bijective expansion."
+}
+
+Labeller "NativeOrderedListStyleArabicLabeller" {
+  id = "native_ordered_list_style_arabic"
+  sequence = ref:(DecimalNumericSequence)
+  context = ref:(ListContext)
+  type = "list_item_ordered_native_style_arabic"
+  template = ref:(OrderedListItemLevel1LabelTemplate)
+  definition = "Native ISO ordered-list local caption; each actual list owns its item sequence."
+}
+
+Labeller "NativeOrderedListStyleAlphabetLabeller" {
+  id = "native_ordered_list_style_alphabet"
+  sequence = ref:(NativeLowerLetterSequence)
+  context = ref:(ListContext)
+  type = "list_item_ordered_native_style_alphabet"
+  template = ref:(OrderedListItemLevel1LabelTemplate)
+  definition = "Native ISO ordered-list local caption; each actual list owns its item sequence."
+}
+
+Labeller "NativeOrderedListStyleAlphabetUpperLabeller" {
+  id = "native_ordered_list_style_alphabet_upper"
+  sequence = ref:(NativeUpperLetterSequence)
+  context = ref:(ListContext)
+  type = "list_item_ordered_native_style_alphabet_upper"
+  template = ref:(NativeUpperListTemplate)
+  definition = "Native ISO ordered-list local caption; each actual list owns its item sequence."
+}
+
+Labeller "NativeOrderedListStyleRomanLabeller" {
+  id = "native_ordered_list_style_roman"
+  sequence = ref:(RomanLowerNumericSequence)
+  context = ref:(ListContext)
+  type = "list_item_ordered_native_style_roman"
+  template = ref:(OrderedListItemLevel1LabelTemplate)
+  definition = "Native ISO ordered-list local caption; each actual list owns its item sequence."
+}
+
+Labeller "NativeOrderedListStyleRomanUpperLabeller" {
+  id = "native_ordered_list_style_roman_upper"
+  sequence = ref:(RomanUpperNumericSequence)
+  context = ref:(ListContext)
+  type = "list_item_ordered_native_style_roman_upper"
+  template = ref:(NativeUpperListTemplate)
+  definition = "Native ISO ordered-list local caption; each actual list owns its item sequence."
+}
+
+Labeller "NativeOrderedListLevel1Labeller" {
+  id = "native_ordered_list_level1"
+  sequence = ref:(NativeLowerLetterSequence)
+  context = ref:(ListContext)
+  type = "list_item_ordered_native_level1"
+  template = ref:(OrderedListItemLevel1LabelTemplate)
+  definition = "Native ISO ordered-list local caption; each actual list owns its item sequence."
+}
+
+Labeller "NativeOrderedListLevel2Labeller" {
+  id = "native_ordered_list_level2"
+  sequence = ref:(DecimalNumericSequence)
+  context = ref:(ListContext)
+  type = "list_item_ordered_native_level2"
+  template = ref:(OrderedListItemLevel1LabelTemplate)
+  definition = "Native ISO ordered-list local caption; each actual list owns its item sequence."
+}
+
+Labeller "NativeOrderedListLevel3Labeller" {
+  id = "native_ordered_list_level3"
+  sequence = ref:(RomanLowerNumericSequence)
+  context = ref:(ListContext)
+  type = "list_item_ordered_native_level3"
+  template = ref:(OrderedListItemLevel1LabelTemplate)
+  definition = "Native ISO ordered-list local caption; each actual list owns its item sequence."
+}
+
+Labeller "NativeOrderedListLevel4Labeller" {
+  id = "native_ordered_list_level4"
+  sequence = ref:(NativeUpperLetterSequence)
+  context = ref:(ListContext)
+  type = "list_item_ordered_native_level4"
+  template = ref:(NativeUpperListTemplate)
+  definition = "Native ISO ordered-list local caption; each actual list owns its item sequence."
+}
+
+Labeller "NativeOrderedListLevel5Labeller" {
+  id = "native_ordered_list_level5"
+  sequence = ref:(RomanUpperNumericSequence)
+  context = ref:(ListContext)
+  type = "list_item_ordered_native_level5"
+  template = ref:(NativeUpperListTemplate)
+  definition = "Native ISO ordered-list local caption; each actual list owns its item sequence."
+}
+
+Labeller "NativeOrderedListLevel6Labeller" {
+  id = "native_ordered_list_level6"
+  sequence = ref:(NativeLowerLetterSequence)
+  context = ref:(ListContext)
+  type = "list_item_ordered_native_level6"
+  template = ref:(OrderedListItemLevel1LabelTemplate)
+  definition = "Native ISO ordered-list local caption; each actual list owns its item sequence."
+}
+
+Labeller "NativeOrderedListLevel7Labeller" {
+  id = "native_ordered_list_level7"
+  sequence = ref:(DecimalNumericSequence)
+  context = ref:(ListContext)
+  type = "list_item_ordered_native_level7"
+  template = ref:(OrderedListItemLevel1LabelTemplate)
+  definition = "Native ISO ordered-list local caption; each actual list owns its item sequence."
+}
+
+Labeller "NativeOrderedListLevel8Labeller" {
+  id = "native_ordered_list_level8"
+  sequence = ref:(RomanLowerNumericSequence)
+  context = ref:(ListContext)
+  type = "list_item_ordered_native_level8"
+  template = ref:(OrderedListItemLevel1LabelTemplate)
+  definition = "Native ISO ordered-list local caption; each actual list owns its item sequence."
+}
+
+Labeller "NativeOrderedListLevel9Labeller" {
+  id = "native_ordered_list_level9"
+  sequence = ref:(NativeUpperLetterSequence)
+  context = ref:(ListContext)
+  type = "list_item_ordered_native_level9"
+  template = ref:(NativeUpperListTemplate)
+  definition = "Native ISO ordered-list local caption; each actual list owns its item sequence."
+}
+
+Labeller "NativeOrderedListLevel10Labeller" {
+  id = "native_ordered_list_level10"
+  sequence = ref:(RomanUpperNumericSequence)
+  context = ref:(ListContext)
+  type = "list_item_ordered_native_level10"
+  template = ref:(NativeUpperListTemplate)
+  definition = "Native ISO ordered-list local caption; each actual list owns its item sequence."
+}
+
+Labeller "NativeOrderedListDeepLabeller" {
+  id = "native_ordered_list_deep"
+  sequence = ref:(DecimalNumericSequence)
+  context = ref:(ListContext)
+  type = "list_item_ordered_native_deep"
+  template = ref:(OrderedListItemLevel1LabelTemplate)
+  definition = "Native ISO ordered-list local caption; each actual list owns its item sequence."
+}

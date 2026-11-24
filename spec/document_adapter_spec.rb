@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
 require_relative "spec_helper"
-require "nokogiri"
-require "metanorma/ladl/document_adapter"
-require "metanorma/iso/document"
+require_relative "native_spec_helper"
+
+return unless LadlNativeSpecs.available?(legacy: false)
 
 RSpec.describe Metanorma::Ladl::DocumentAdapter do
   let(:adapter) { described_class.new(mode: :presentation) }

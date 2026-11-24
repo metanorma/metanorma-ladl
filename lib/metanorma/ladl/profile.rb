@@ -39,6 +39,12 @@ module Metanorma
         new(LmlCodec.load(text))
       end
 
+      # Explicit operative specialization; the original 66-declaration worked
+      # example and its entrypoint remain unchanged.
+      def self.iso_iec_native
+        from_yaml(File.read(File.expand_path("../../../ladl/iso-native.yaml", __dir__), encoding: "UTF-8"))
+      end
+
       def self.iso_iec
         from_yaml(File.read(File.expand_path("../../../ladl/iso-iec.yaml", __dir__), encoding: "UTF-8"))
       end

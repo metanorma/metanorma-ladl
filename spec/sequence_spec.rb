@@ -37,4 +37,11 @@ RSpec.describe Metanorma::Ladl::Sequence do
     expect { seq.value(25) }.to raise_error(Metanorma::Ladl::UnsupportedFeature, /exhausted/)
     expect { described_class.builtin("CyrillicUpperCharacterSequence") }.to raise_error(Metanorma::Ladl::UnsupportedFeature)
   end
+  it "sets an invocation-local initial value while preserving base, increment and the source sequence" do
+    base = described_class.new("Even", base: described_class.builtin("DecimalNumericSequence"), initial_value: 2, increment: 2)
+    authored = base.with_initial_value(5)
+    expect([authored.value(1), authored.value(2)]).to eq(%w[5 7])
+    expect([base.value(1), base.value(2)]).to eq(%w[2 4])
+  end
+
 end

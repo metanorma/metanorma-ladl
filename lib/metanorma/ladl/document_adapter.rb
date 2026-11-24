@@ -14,13 +14,21 @@ module Metanorma
       Ancillary = Metanorma::Document::Components::AncillaryBlocks
       Lists = Metanorma::Document::Components::Lists
       Sections = Metanorma::Standoc::Document::Sections
+      ORDERED_SEQUENCES = {
+        "arabic" => "DecimalNumericSequence",
+        "alphabet" => "AlphaLowerNumericSequence",
+        "roman" => "RomanLowerNumericSequence",
+      }.freeze
       GENERATED_CONTAINER = "ladl"
       OMIT = %i[bibdata bibliography title name fmt_title fmt_name fmt_xref_label
                 fmt_fn_label fmt_ladl_label_data contrib_metadata].freeze
 
-      def initialize(mode:)
+      def initialize(mode:, profile: nil)
         raise TreeError, "LADL requires presentation mode" unless mode == :presentation
 
+        raise ProfileError, "Native profile must be a validated Profile" if profile && !profile.is_a?(Profile)
+        @native_list_types = profile ? profile.labellers.map(&:type).grep(/\Alist_item_ordered_native_/).freeze : []
+        @native_list_depth = @native_list_types.filter_map { |type| type[/_level(\d+)\z/, 1]&.to_i }.max || 0
         @parents = {}
       end
 
@@ -77,14 +85,26 @@ module Metanorma
         return "subfigure" if node.is_a?(Ancillary::Subfigure)
         return "figure" if node.is_a?(Ancillary::FigureBlock)
         return "table" if node.is_a?(Metanorma::Document::Components::Tables::TableBlock)
-        return "note" if node.is_a?(Blocks::NoteBlock) || standoc_note?(node)
+        return ordinary_note?(node) ? "note" : nil if note?(node)
         return "example" if node.is_a?(Ancillary::ExampleBlock)
         return "formula" if node.is_a?(Ancillary::FormulaBlock)
-        return "list" if node.is_a?(Lists::List)
+        if node.is_a?(Lists::List)
+          return "list" if node.is_a?(Lists::OrderedList) && ancestors(node).none? { |parent| parent.is_a?(Lists::OrderedList) }
+          return nil
+        end
         if node.is_a?(Lists::ListItem)
           lists = ancestors(node).select { |p| p.is_a?(Lists::List) }
           return "list_item_unordered" unless lists.first.is_a?(Lists::OrderedList)
           depth = lists.count { |p| p.is_a?(Lists::OrderedList) }
+          unless @native_list_types.empty?
+            style = value(lists.first, :type)
+            suffix = style ? "style_#{style}" : (depth > @native_list_depth ? "deep" : "level#{depth}")
+            selected = "list_item_ordered_native_#{suffix}"
+            unless @native_list_types.include?(selected)
+              raise UnsupportedFeature, "Native profile has no ordered-list type #{style.inspect} at depth #{depth}"
+            end
+            return selected
+          end
           raise TreeError, "ISO/IEC supports four ordered list levels" if depth > 4
           return "list_item_ordered_level#{depth}"
         end
@@ -121,11 +141,39 @@ module Metanorma
         return default unless type == "note"
 
         nodes.count do |node|
-          next false unless node.is_a?(Blocks::NoteBlock) || standoc_note?(node)
+          next false unless ordinary_note?(node)
 
           owner = ancestors(node).find { |parent| contexts_for(parent, node).include?(context) }
           owner.equal?(scope)
         end
+      end
+
+      # Authored native list inputs select an existing sequence and set its
+      # initial value without mutating the profile's declaration or shared state.
+      def sequence_for(node, default:)
+        return default unless node.is_a?(Lists::ListItem)
+
+        list = ancestors(node).find { |parent| parent.is_a?(Lists::List) }
+        return default unless list.is_a?(Lists::OrderedList)
+
+        style = @native_list_types.empty? ? value(list, :type) : nil
+        if %w[alphabet_upper roman_upper].include?(style)
+          raise UnsupportedFeature, "Native uppercase ordered lists need a profile template for the legacy period delimiter"
+        end
+        sequence = if style
+                     name = ORDERED_SEQUENCES[style]
+                     raise UnsupportedFeature, "Unsupported native ordered-list type #{style.inspect}" unless name
+                     Sequence.builtin(name)
+                   else
+                     default
+                   end
+        start = value(list, :start)
+        return sequence if start.nil?
+
+        unless start.to_s.match?(/\A[+-]?\d+\z/)
+          raise TreeError, "Native ordered-list start must be an integer"
+        end
+        sequence.with_initial_value(Integer(start.to_s, 10))
       end
 
       def validate(node)
@@ -228,11 +276,23 @@ module Metanorma
       end
 
       def context_type(node)
-        return "note" if node.is_a?(Blocks::NoteBlock) || standoc_note?(node)
+        return ordinary_note?(node) ? "note" : nil if note?(node)
         return "subfigure" if node.is_a?(Ancillary::Subfigure)
         return "example" if node.is_a?(Ancillary::ExampleBlock)
 
         type(node)
+      end
+
+      def note?(node)
+        node.is_a?(Blocks::NoteBlock) || standoc_note?(node)
+      end
+
+      def ordinary_note?(node)
+        return false unless note?(node)
+        return false if identifier(node).to_s.strip.empty?
+        return false if %w[units requirement].include?(value(node, :type_attr))
+
+        true
       end
 
       def hidden?(node)

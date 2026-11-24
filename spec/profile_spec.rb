@@ -5,6 +5,15 @@ require_relative "spec_helper"
 RSpec.describe Metanorma::Ladl::Profile do
   let(:candidate) { File.read(File.expand_path("../ladl/iso-iec.lml", __dir__)) }
 
+  it "uses equivalent operative YAML/LML declarations while preserving the original example" do
+    path = File.expand_path("../ladl/iso-native.lml", __dir__)
+    lml = Metanorma::Ladl::Profile.from_lml(File.read(path))
+    expect(lml.to_yaml).to eq(described_class.iso_iec_native.to_yaml)
+    expect(iso_profile.instances.size).to eq(66)
+    expect(iso_profile.labellers.find { |labeller| labeller.type == "list_item_ordered_level4" }.sequence.name)
+      .to eq("AlphaLowerNumericSequence")
+  end
+
   it "loads all 66 declarations, 20 labellers and 6 contexts from the corrected worked instance" do
     profile = described_class.from_lml(candidate)
     expect(profile.instances.length).to eq(66)
