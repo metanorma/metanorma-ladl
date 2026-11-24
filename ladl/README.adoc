@@ -1,0 +1,90 @@
+= ISO/IEC LADL candidate profile
+
+This package implements the MN 112 worked ISO/IEC label profile.
+
+`iso-iec.lml` and `iso-iec.yaml` normalize to identical typed instance data.
+All 66 declarations are retained: one LabelStyle, six LabelContexts,
+39 LabelTemplates and 20 Labellers. Four referenced built-in sequences are
+resolved explicitly.
+The untouched upstream file is a regression fixture outside the package runtime.
+
+== Supported syntax
+
+* Draft `instance Name < Type` headers are realized using supported canonical
+  `Type "Name"` LML syntax.
+* References use supported `ref:(Name)` literals instead of opaque bare values.
+* This ISO profile selects `DecimalNumericSequence`. MN 112 distinguishes decimal
+  digits from the Arabic-script digits of `ArabicNumericSequence`; the engine
+  preserves that distinction and does not alias the two sequences.
+
+The original draft syntax is rejected, not automatically rewritten at runtime.
+LML parsing, quoting and string unescaping use the real `lutaml-lml` parser API.
+YAML uses a safe, duplicate-key-rejecting `mn112/1` instance representation;
+references are maps with a single `ref` key.
+
+== Engine use
+
+[source,ruby]
+----
+profile = Metanorma::Ladl::Profile.iso_iec
+engine = Metanorma::Ladl::Engine.new(profile: profile)
+engine.call(content_tree)
+----
+
+The default adapter supports the MN 112 reference `ContentElement` model, a
+LutaML-Model typed tree with explicit contexts and typed label output. It is not
+an adapter for Metanorma Document. A different model requires an explicit adapter
+with `validate`, `children`, `type`, `context`, `identifier` and `assign` methods.
+The call mutates labels and returns the same tree. It computes all labels before
+writing any and resets counters for every invocation. A completed call clears
+stale LADL labels from reference-tree nodes that no longer have a binding.
+
+Context instances are explicit associations on the content tree. For each node,
+the nearest associated context with a matching labeller supplies the counter
+scope. Explicit parent-labeller references resolve against content ancestors.
+An implicit `%parent` comes from the labeled context ancestor. Template
+conditions use the complete same-context element count; matching conditions win,
+then the first unconditional template, then the first template. Global labels
+are absent when no global template is declared.
+
+== Scope and known gaps
+
+The worked-profile golden test exercises every one of its 20 declared labellers.
+This is component semantics, not ISO legacy-output parity or completed MN 112
+conformance. Actual Metanorma Document labels, reference-profile migration and
+the all-flavor xref matrix remain separate integration work.
+
+Supported named sequences are decimal, Arabic-script decimal, lower/upper Latin
+bijective sequences, lower/upper Roman values from 1 to 3999, and finite
+lower/upper Greek characters. Custom numeric initial/increment values and
+explicit character sequences support defined repetition/prefix expansion.
+Unsupported numeral systems, unspecified cycle-length behavior and unknown
+syntax fail explicitly. This candidate does not invent a Cyrillic alphabet,
+East Asian numeral algorithms, Hebrew notation or suffix-expansion parameters.
+
+== Native hierarchy
+
+The 66 profile declarations are unchanged. The runtime and `DocumentAdapter`
+apply these rules to them:
+
+* A labeller nested under itself continues its own compound number, so clauses
+  render `1.1.1.1` and annex clauses render `A.1.1.1`. This requires a
+  `%pn<separator>%n` template. Any other nested use raises `UnsupportedFeature`.
+* `Label#value` remains the element's own ordinal.
+* Each native figure scopes its subfigures. An annex figure satisfies the
+  declared `FigureLabeller` parent only as that subfigure's counter scope,
+  which produces `Figure A.1 a)`.
+* Each native figure or table scopes its own notes.
+* Figures, tables, formulas and lists in nested annex clauses count across the
+  whole annex.
+* A hidden node consumes no ordinal and receives no generated label. Its
+  descendants remain eligible for their own labels. Hidden notes still count
+  toward the context's conditional note template selection.
+  Previously generated labels on hidden nodes are removed; authored labels stay.
+* A numbered descendant that requires an unavailable hidden-parent number raises
+  `MissingParent` before any labels change. Blank-prefix legacy labels such as
+  `.1` are an explicit compatibility gap, not silently synthesized.
+
+MN 112 has no figure context in the worked profile, so the adapter uses the
+figure as the owner of the subfigure labeller's declared context. A dedicated
+`FigureContext` would be a profile contract change.
