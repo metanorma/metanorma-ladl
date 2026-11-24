@@ -9,6 +9,8 @@ module Metanorma
     # Explicit adapter for the actual Document/Standoc model graph. The caller
     # must identify presentation processing; semantic documents are never labelled.
     class DocumentAdapter
+      FLAVOR_ROOT_NAME = /\AMetanorma::\w+::Document::Root\z/
+
       Inline = Metanorma::Document::Components::Inline
       Blocks = Metanorma::Document::Components::Blocks
       Ancillary = Metanorma::Document::Components::AncillaryBlocks
@@ -371,9 +373,11 @@ module Metanorma
         flag == true || flag.to_s.casecmp?("true")
       end
 
+      # Any flavor's document root: the shared SDK root, or a
+      # Metanorma::<Flavor>::Document::Root (iso, iec, generic, ...).
       def root?(node)
         node.is_a?(Metanorma::Document::Root) ||
-          (defined?(Metanorma::Iso::Document::Root) && node.is_a?(Metanorma::Iso::Document::Root))
+          node.class.ancestors.any? { |k| FLAVOR_ROOT_NAME.match?(k.name.to_s) }
       end
 
       def standoc_note?(node)
