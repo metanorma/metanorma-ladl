@@ -18,5 +18,5 @@ Gem::Specification.new do |s|
   s.files = Dir["lib/**/*.rb", "ladl/iso-iec.lml", "ladl/iso-iec.yaml", "ladl/iso-native.lml", "ladl/iso-native.yaml", "ladl/README.adoc", "README.adoc", "LICENSE.txt"].select { |f| File.file?(f) }
   s.require_paths = ["lib"]
   s.add_dependency "lutaml-model", "~> 0.8"
-  s.add_dependency "lutaml-lml", ">= 0.3.6", "< 0.3.7"
+  s.add_dependency "lutaml-lml", ">= 0.3.8"
 end
