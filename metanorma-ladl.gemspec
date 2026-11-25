@@ -7,6 +7,13 @@ Gem::Specification.new do |s|
   s.license = "BSD-2-Clause"
   s.homepage = "https://github.com/metanorma/metanorma-ladl"
   s.description = "Parse declarative label profiles and assign persistent labels to Metanorma presentation models."
+  s.metadata = {
+    "homepage_uri" => s.homepage,
+    "source_code_uri" => s.homepage,
+    "changelog_uri" => "#{s.homepage}/releases",
+    "bug_tracker_uri" => "#{s.homepage}/issues",
+    "rubygems_mfa_required" => "true"
+  }
   s.required_ruby_version = ">= 3.3"
   s.files = Dir["lib/**/*.rb", "ladl/iso-iec.lml", "ladl/iso-iec.yaml", "ladl/iso-native.lml", "ladl/iso-native.yaml", "ladl/README.adoc", "README.adoc", "LICENSE.txt"].select { |f| File.file?(f) }
   s.require_paths = ["lib"]
