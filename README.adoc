@@ -17,7 +17,8 @@ RubyGems, and its API may change.
   run on Ruby 4.0.1. Other Ruby versions and operating systems have not been
   confirmed yet.
 * The native adapter needs a `metanorma-document` revision that adds
-  `FmtLadlLabelData`. That change is not in a released version yet.
+  `FmtLadlLabelData`. That change is not in a released version yet. The adapter
+  is optional; the core engine and profiles work without it.
 * No Metanorma flavor uses this library by default.
 
 == Installation
@@ -180,9 +181,42 @@ through Core and Taste uses the stored labels for global and local
 cross-references. Explicit authored cross-reference text still takes priority.
 
 The native adapter recognizes these node types: `annex`, `clause`, `subclause`,
-`figure`, `subfigure`, `table`, `note`, `example`, `formula`, `list`,
+`figure`, `subfigure`, `table`, `note`, `example`, `formula`, top-level ordered `list`,
 `list_item_unordered`, and `list_item_ordered_level1` through
 `list_item_ordered_level4`. Nodes marked as unnumbered receive no label.
+
+For actual ISO native presentation inputs, select the operative specialization
+explicitly. The original 66-declaration worked example remains unchanged:
+
+[source,ruby]
+----
+profile = Metanorma::Ladl::Profile.iso_iec_native
+adapter = Metanorma::Ladl::DocumentAdapter.new(mode: :presentation, profile: profile)
+Metanorma::Ladl::Engine.new(profile: profile).call(presentation_root, adapter: adapter)
+----
+
+`ladl/iso-native.yaml` and its equivalent LML use existing MN112 labellers,
+sequences, templates and count conditions. Their declarations cover authored
+`arabic`, `alphabet`, `alphabet_upper`, `roman` and `roman_upper` list styles,
+the legacy ten-level depth defaults and deeper decimal fallback, uppercase
+period delimiters, and the single-list reference form. Punctuation stays in
+profile data. This specialization assigns local list-item captions; complete
+legacy nested cross-reference composition remains separate work.
+
+Native ISO note populations exclude `units` and `requirement` note types and
+notes without an ID; those nodes do not change single-note template selection.
+Only ordered lists without an ordered-list ancestor receive a list label.
+Nested items retain an actual list context. Authored list starts use an
+invocation-local sequence initial value, without changing shared declarations.
+The optional adapter `sequence_for(node, default:)` hook must return a `Sequence`;
+an invalid result fails before any labels are assigned.
+
+The original `iso_iec` entrypoint and an adapter without the operative profile
+retain the worked example's declarations and four-level policy. Unknown native
+styles and Latin list values beyond 26 fail explicitly; legacy non-letter
+overflow is not approximated with the generic bijective alphabet. No new normative model classes or label metadata fields
+are introduced. Direct notes inside requirement blocks still need SDK model
+support; this adapter never synthesizes missing payload.
 
 Profiles can use:
 
@@ -207,7 +241,7 @@ These cases raise an error instead of producing a wrong label:
 * Unknown template placeholders or expansion rules.
 * Roman values outside 1 to 3999, and character sequences that run out of
   values without an expansion rule.
-* More than four levels of ordered list in the native adapter.
+* More than four levels of ordered list with the original worked profile.
 * LML imports, and nested or extended LML instances.
 
 A profile can declare its own `CharacterSequence` with any characters. That is
@@ -228,6 +262,16 @@ particular writing system.
 ----
 bundle install
 bundle exec rake
+----
+
+The default bundle exercises the core engine and profiles. Native integration
+specs are skipped when their optional SDK or flavor dependencies are absent.
+To test against the pinned development SDK and ISO stack:
+
+[source,sh]
+----
+LADL_NATIVE=1 bundle install
+LADL_NATIVE=1 bundle exec rake
 ----
 
 == License
